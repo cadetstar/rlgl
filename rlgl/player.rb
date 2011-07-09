@@ -56,7 +56,7 @@ class Player < Entity
   def setup_actions(actions)
     @actions = []
     actions.each do |act,t|
-      @actions << [Time.now + t, act]
+      @actions << [Time.now + t.to_f, act]
     end
     @player_in_control = false
   end

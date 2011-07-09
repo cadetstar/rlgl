@@ -8,8 +8,8 @@ class ActiveGameLevel
 
   def initialize(level_info, window)
     #@action_interval = 5.0
-    @action_interval = level_info['action_interval']
-    @time_to_next_action = Time.now + @action_interval
+    @action_interval = level_info['action_interval'].to_f
+    @time_to_next_action = Time.now + @action_interval.to_f
     #@actions = [['move_right', 0],['jump',1],['pause',2]]
     @actions = level_info['actions']
     #@actions = [['move_right', 1]]
@@ -21,7 +21,8 @@ class ActiveGameLevel
     #@platform = Platform.new(10, 400, 500, 800, 20, window)
     @platforms = Array.new
     level_info['entities']['platforms'].each do |r|
-      @platforms << Platform.new(@@mass, r['x'], window.height - r['y'], r['h'], r['w'], window)
+      @platforms << j = Platform.new(@@mass, r['x'].to_i, window.height - r['y'].to_i, r['w'].to_i, r['h'].to_i, window)
+      add_entity(j)
     end
     #@platform_body = CP::Body.new_static()
     #@platform_body.p = vec2(0,500)
@@ -31,8 +32,8 @@ class ActiveGameLevel
     #@image = Gosu::Image.new(window, './media/Starfighter.bmp')
     @bg_image = Gosu::Image.new(window, './media/grid.png' )
 
-    add_entity(@platform)
-    @platform.body.velocity_func() {vec2(0,0)}
+    #add_entity(@platform)
+#    @platform.body.velocity_func() {vec2(0,0)}
     @waiting = false
   end
   
