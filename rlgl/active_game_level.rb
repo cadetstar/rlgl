@@ -9,13 +9,12 @@ class ActiveGameLevel
     @time_to_next_action = Time.now + @action_interval
     
     @space = CP::Space.new()
-    @platform_body = CP::Body.new_static()
-    @platform_body.p = vec2(200,200)
-    @platform_shape = CP::Shape::Poly.new(@platform_body, [vec2(-50,-50),vec2(-50,50),vec2(50,50),vec2(50,-50)])
-    
-    @image = Gosu::Image.new(window, './media/Starfighter.bmp')
-    
-    @space.add_body(@platform_body)
+    #@platform_body = CP::Body.new_static()
+    #@platform_body.p = vec2(200,200)
+    #@platform_shape = CP::Shape::Poly.new(@platform_body, [vec2(-50,-50),vec2(-50,50),vec2(50,50),vec2(50,-50)])
+    #@image = Gosu::Image.new(window, './media/Starfighter.bmp')
+    @platform = Entity.new(10, 200, 200, 100, 100, window)
+    @space.add_body(@platform.body)
   end
   
   def update
@@ -27,6 +26,7 @@ class ActiveGameLevel
   
   
   def draw
-    @image.draw_as_quad(150,150,0xffffffff, 250, 150, 0xffffffff, 250, 250, 0xffffffff, 150, 250, 0xffffffff, ZOrder::Platforms)
+    @platform.draw
+    #@image.draw_as_quad(150,150,0xffffffff, 250, 150, 0xffffffff, 250, 250, 0xffffffff, 150, 250, 0xffffffff, ZOrder::Platforms)
   end
 end

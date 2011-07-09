@@ -4,6 +4,7 @@ require 'gosu'
 require 'json'
 require 'chipmunk'
 
+require 'entity'
 require 'window'
 require 'player'
 require 'active_game_level'
