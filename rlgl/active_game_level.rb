@@ -25,6 +25,7 @@ class ActiveGameLevel
     #@platform = Platform.new(10, 400, 500, 800, 20, window)
     @platforms = Array.new
     level_info['entities']['platforms'].each do |r|
+      next if r['w'].to_i.zero? or r['h'].to_i.zero?
       @platforms << j = Platform.new(@@mass, r['x'].to_i, window.height - r['y'].to_i, r['w'].to_i, r['h'].to_i, window)
       add_entity(j)
     end

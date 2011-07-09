@@ -4,7 +4,6 @@ class GameWindow < Gosu::Window
     self.caption = 'Red Light, Green Light'
     
     @levels = GameLevels.names
-    
     @menu = Menu.new(@levels, self)
     @active_screen = 'menu'
   end
@@ -62,7 +61,13 @@ class GameWindow < Gosu::Window
           when Gosu::KbUp
             @player.jump if @player.player_in_control
           when Gosu::KbEscape
-            close
+            @levels = GameLevels.names
+            @menu = Menu.new(@levels, self)
+            @game_level = nil
+            @ui = nil
+            @player = nil
+            @active_screen = 'menu'
+            return
         end
     end
     
