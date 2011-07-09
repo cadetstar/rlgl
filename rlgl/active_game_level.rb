@@ -4,20 +4,25 @@ class ActiveGameLevel
   attr_reader :player_in_control
   attr_reader :gravity
   attr_reader :actions
-  
+  @@mass = 10
+
   def initialize(level_info, window)
-    @action_interval = 5.0
-    #@action_interval = level_info['action_interval']
+    #@action_interval = 5.0
+    @action_interval = level_info['action_interval']
     @time_to_next_action = Time.now + @action_interval
     #@actions = [['move_right', 0],['jump',1],['pause',2]]
-    #@actions = level_info['actions']
-    @actions = [['move_right', 1]]
+    @actions = level_info['actions']
+    #@actions = [['move_right', 1]]
 
     @space = CP::Space.new()
     @space.gravity = vec2(0,100)
     @space.damping = 0.95
 
-    @platform = Platform.new(10, 400, 500, 800, 20, window)
+    #@platform = Platform.new(10, 400, 500, 800, 20, window)
+    @platforms = Array.new
+    level_info['entities']['platforms'].each do |r|
+      @platforms << Platform.new(@@mass, r['x'], window.height - r['y'], r['h'], r['w'], window)
+    end
     #@platform_body = CP::Body.new_static()
     #@platform_body.p = vec2(0,500)
     #@platform_shape = CP::Shape::Poly.new(@platform_body, [vec2(0,0),vec2(0,20),vec2(600,20),vec2(600,0)])
@@ -56,7 +61,7 @@ class ActiveGameLevel
   
   def draw
     #@image.draw_as_quad(@platform_body.p.x + @platform_shape.vert(0).x,@platform_body.p.y + @platform_shape.vert(0).y,0xffffffff, @platform_body.p.x + @platform_shape.vert(1).x, @platform_body.p.y + @platform_shape.vert(1).y, 0xffffffff, @platform_body.p.x + @platform_shape.vert(2).x, @platform_body.p.y + @platform_shape.vert(2).y, 0xffffffff, @platform_body.p.x + @platform_shape.vert(3).x, @platform_body.p.y + @platform_shape.vert(3).y, 0xffffffff, ZOrder::Platforms)
-    @platform.draw
+    @platforms.each {|r| r.draw}
     @bg_image.draw_as_quad(0, 0, 0xffffffff, 800, 0, 0xffffffff, 800, 600, 0xffffffff, 0, 600, 0xffffffff, ZOrder::Platforms - 1)
   end
 end
