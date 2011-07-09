@@ -12,7 +12,18 @@ class GameWindow < Gosu::Window
   def update
     case @active_screen
       when 'game'
-        @game_level.update
+        
+        if @player.player_in_control
+          if button_down? Gosu::KbRight
+            @player.move_right
+          end
+          if button_down? Gosu::KbLeft
+            @player.move_left
+          end
+        end
+        @player.update
+        
+        @game_level.update(@player)
     end
   end
   
@@ -23,6 +34,7 @@ class GameWindow < Gosu::Window
       when 'game'
         @game_level.draw
         @ui.draw(@game_level, self)
+        @player.draw
     end
   end
   
@@ -39,12 +51,19 @@ class GameWindow < Gosu::Window
             @active_screen = 'game'
             @game_level = ActiveGameLevel.new(@current_level, self)
             @ui = UI.new
+            @player = Player.new(self, @game_level)
           when Gosu::KbEscape
             close
           else
             return
         end
-        #@menu.draw(self)
+      when 'game'
+        case id
+          when Gosu::KbUp
+            @player.jump if @player.player_in_control
+          when Gosu::KbEscape
+            close
+        end
     end
     
     if id == Gosu::KbEscape
