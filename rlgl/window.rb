@@ -1,7 +1,7 @@
 class GameWindow < Gosu::Window
   def initialize
     super 800, 600, false
-    self.caption = 'This is a window'
+    self.caption = 'Red Light, Green Light'
     
     @levels = GameLevels.names
     
@@ -10,6 +10,10 @@ class GameWindow < Gosu::Window
   end
   
   def update
+    case @active_screen
+      when 'game'
+        @game_level.update
+    end
   end
   
   def draw
@@ -18,6 +22,7 @@ class GameWindow < Gosu::Window
         @menu.draw(self)
       when 'game'
         @game_level.draw
+        @ui.draw(@game_level, self)
     end
   end
   
@@ -33,6 +38,7 @@ class GameWindow < Gosu::Window
             @current_level = @menu.select_entry
             @active_screen = 'game'
             @game_level = ActiveGameLevel.new(@current_level, self)
+            @ui = UI.new
           when Gosu::KbEscape
             close
           else
