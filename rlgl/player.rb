@@ -10,21 +10,21 @@ class Player < Entity
   def initialize(window, game_level, start_pos = {'x' => 200, 'y' => 200})
     @body = CP::Body.new(200, CP.moment_for_box(200, 20,40))
     @body.w_limit = 0
-    @body.p = vec2(start_pos['x'],start_pos['y'])
+    @body.p = vec2(start_pos['x'].to_i,window.height - start_pos['y'].to_i - 80)
     
     verts = []
-    verts << vec2(-25,-40)
-    verts << vec2(-25,40)
-    verts << vec2(25,40)
-    verts << vec2(25,-40)
+    verts << vec2(0,0)
+    verts << vec2(0,80)
+    verts << vec2(50,80)
+    verts << vec2(50,0)
     
     @shape = CP::Shape::Poly.new(@body, verts)
     @shape.e = 0.0
-    @shape.u = 0.5
+    @shape.u = 0.2
     @shape.collision_type = :player
     
     game_level.add_entity(self)
-    game_level.add_collision_func(:player, :platform) {@can_jump = true}
+    game_level.add_collision_func(:player, :platform) {|k,v| puts v.inspect;@can_jump = true}
     
     @player_image = Gosu::Image.new(window, './media/player.png')
     @can_jump = true
@@ -51,6 +51,20 @@ class Player < Entity
     if @body.v.x < -@@max_h
       @body.v.x = -@@max_h
     end
+    
+    puts [@body.p, $w.height].inspect
+    
+    movement = 0
+    diff = @body.p.x - game_level.offset_x - $w.width / 2.0
+    right_side = (game_level.width - game_level.offset_x) - $w.width
+    left_side = game_level.offset_x
+    
+    if diff > 0 and right_side > 0
+      movement = [diff, right_side].min
+    elsif diff < 0 and left_side > 0
+      movement = [diff,-left_side].max
+    end
+    game_level.offset_x += movement
   end
   
   def setup_actions(actions)
@@ -78,8 +92,9 @@ class Player < Entity
     end
   end
   
-  def draw
-    @player_image.draw_rot(@body.p.x,@body.p.y, ZOrder::Player, 0)
+  def draw(game_level)
+    puts [@player_image.height,@player_image.width, @shape.vert(2)].inspect
+    @player_image.draw_rot(@body.p.x - game_level.offset_x,@body.p.y, ZOrder::Player, 0)
   end
   
   def jolt_right
