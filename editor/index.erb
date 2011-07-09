@@ -1,0 +1,10 @@
+<h2>Levels</h2>
+<% @levels.each do |l| %>
+<p><%= link_to l, "/level/edit/#{l}" %> -- <%= link_to "Move Up", "level/up/#{l}" %> -- <%= link_to "Move Down", "level/down/#{l}" %></p>
+<% end %>
+
+<h3>New Level</h3>
+<form action="/level/new" method="POST">
+<p>Name: <%= text_field_tag :name %></p>
+<p><%= submit_tag "Create" %></p>
+</form>

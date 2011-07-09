@@ -1,0 +1,115 @@
+<html>
+<head>
+</head>
+<body>
+<%= link_to "Back", "/" %>
+<h2>Editing <b><%= @name %></b></h2>
+<form action="/level/save/<%= @name %>" method="POST">
+
+<p>Name: <%= text_field_tag :mod_name, @name %></p>
+<p>Time between Actions: <%= text_field_tag :interval, @info['action_interval'] %></p>
+<p>Player Start Position:<br />X: <%= text_field_tag :pos_x, @info['start_pos'] ? @info['start_pos']['x'] : 0 %> Y: <%= text_field_tag :pos_y, @info['start_pos'] ? @info['start_pos']['y'] : 0 %></p>
+<p>Stage Width (in pixels): <%= text_field_tag :width, @info['width'] %>
+
+<h3>Actions</h3>
+<div id="action_holder">
+<% if @info['actions'].is_a? Array %>
+  <% @info['actions'].each do |act| %>
+    <p>Action: <%= select_tag "actions[][action]", options_for_select(@action_list, act[0]) %> Delay: <%= text_field_tag "actions[][delay]", act[1] %></p>
+  <% end %>
+<% end %>
+</div>
+<p><%= link_to_function "New Action", "duplicateFromAToB('new_action','action_holder');" %></p>
+
+<% @info['entities'] ||= {} %>
+<h3>Entities</h3>
+<p>Goal:<br />
+  X: <%= text_field_tag "goal[x]", @info['entities']['goal'] ? @info['entities']['goal']['x'] : 0 %>
+  Y: <%= text_field_tag "goal[y]", @info['entities']['goal'] ? @info['entities']['goal']['y'] : 0 %>
+  H: <%= text_field_tag "goal[h]", @info['entities']['goal'] ? @info['entities']['goal']['h'] : 0 %>
+  W: <%= text_field_tag "goal[w]", @info['entities']['goal'] ? @info['entities']['goal']['w'] : 0 %></p>
+
+<h4>Platforms</h4>
+<div id="platform_holder">
+  <% if @info['entities']['platforms'] %>
+    <% @info['entities']['platforms'].each do |e| %>
+      <p>X: <%= text_field_tag "platforms[][x]", e['x']  %>
+      Y: <%= text_field_tag "platforms[][y]", e['y']  %>
+      H: <%= text_field_tag "platforms[][h]", e['h']  %>
+      W: <%= text_field_tag "platforms[][w]", e['w']  %></p>
+    <% end %>
+  <% end %>
+</div>
+<p><%= link_to_function "New Platform", "duplicateFromAToB('new_platform','platform_holder');" %></p>
+
+<h4>Damagers</h4>
+<div id="damager_holder">
+  <% if @info['entities']['damagers'] %>
+    <% @info['entities']['damagers'].each do |e| %>
+      <p>X: <%= text_field_tag "damagers[][x]", e['x']  %>
+      Y: <%= text_field_tag "damagers[][y]", e['y']  %>
+      H: <%= text_field_tag "damagers[][h]", e['h']  %>
+      W: <%= text_field_tag "damagers[][w]", e['w']  %>
+      ROT: <%= text_field_tag "damagers[][r]", e['r']  %>
+      DMG: <%= text_field_tag "damagers[][d]", e['d']  %>
+      IMG: <%= text_field_tag "damagers[][i]", e['i']  %></p>
+    <% end %>
+  <% end %>
+</div>
+<p><%= link_to_function "New Damager", "duplicateFromAToB('new_damager','damager_holder');" %></p>
+
+<h4>Props</h4>
+<div id="prop_holder">
+  <% if @info['entities']['props'] %>
+    <% @info['entities']['props'].each do |e| %>
+      <p>X: <%= text_field_tag "props[][x]", e['x']  %>
+      Y: <%= text_field_tag "props[][y]", e['y']  %>
+      H: <%= text_field_tag "props[][h]", e['h']  %>
+      ROT: <%= text_field_tag "props[][r]", e['r']  %>
+      IMG: <%= text_field_tag "props[][i]", e['i']  %>
+      Interactable? <%= check_box_tag "props[]['present']", 1, e['present'] %></p>
+    <% end %>
+  <% end %>
+</div>
+<p><%= link_to_function "New Prop", "duplicateFromAToB('new_prop','prop_holder');" %></p>
+<p><%= submit_tag 'Save' %></p>
+</form>
+
+<div style="display:none;" id="new_action">
+  <p>Action: <%= select_tag "actions[][action]", options_for_select(@action_list) %> Delay: <%= text_field_tag "actions[][delay]", 0 %></p>
+</div>
+<div style="display: none;" id="new_platform">
+      <p>X: <%= text_field_tag "platforms[][x]", 0  %>
+      Y: <%= text_field_tag "platforms[][y]", 0  %>
+      H: <%= text_field_tag "platforms[][h]", 0  %>
+      W: <%= text_field_tag "platforms[][w]", 0  %></p>
+</div>
+<div style="display: none;" id="new_damager">
+      <p>X: <%= text_field_tag "damagers[][x]", 0  %>
+      Y: <%= text_field_tag "damagers[][y]", 0  %>
+      H: <%= text_field_tag "damagers[][h]", 0  %>
+      W: <%= text_field_tag "damagers[][w]", 0  %>
+      ROT: <%= text_field_tag "damagers[][r]", 0  %>
+      DMG: <%= text_field_tag "damagers[][d]", 0  %>
+      IMG: <%= text_field_tag "damagers[][i]", ''  %></p>
+</div>
+<div style="display: none;" id="new_prop">
+      <p>X: <%= text_field_tag "props[][x]", 0  %>
+      Y: <%= text_field_tag "props[][y]", 0  %>
+      H: <%= text_field_tag "props[][h]", 0  %>
+      ROT: <%= text_field_tag "props[][r]", 0  %>
+      IMG: <%= text_field_tag "props[][i]", ''  %>
+      Interactable? <%= check_box_tag "props[]['present']", 1, false %></p>
+</div>
+
+<script type="text/javascript">
+  function duplicateFromAToB(a,b) {
+    var children = document.getElementById(a).childNodes;
+    var dest = document.getElementById(b);
+    for(i=0;i < children.length;i++) {
+      dest.appendChild(children[i].cloneNode(true));
+    }
+  }
+</script>
+</body>
+

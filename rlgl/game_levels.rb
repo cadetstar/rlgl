@@ -1,11 +1,16 @@
 class GameLevels
   def self.names
     f = File.open('./levels/level_names.txt')
-    JSON.parse(f.readlines.first)
+    begin
+      levels = JSON.parse(f.readlines.first)
+      levels = levels.sort_by{|c| [c['order'].to_i, c['name']]}
+    rescue
+      levels = []
+    end
+    levels
   end
     
   def initialize
-    Dir.glob('./levels/*')
   end
   
 end
