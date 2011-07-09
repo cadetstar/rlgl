@@ -1,8 +1,13 @@
 class Entity
-  attr_reader :shape
+  attr_accessor :shape
   attr_accessor :body
-  def initialize (mass, x_pos, y_pos, x_size, y_size, window)
-    @body  = CP::Body.new(mass, 0)
+  def initialize (mass, x_pos, y_pos, x_size, y_size, window, movable = true)
+    if movable
+      @body  = CP::Body.new(mass, CP.moment_for_box(mass, x_size, y_size))
+    else
+      @body  = CP::Body.new_static()
+      self.body.velocity_func() { |body, gravity, damping, dt| vec2(0,0)}
+    end
     @body.p = vec2(x_pos, y_pos)
     @x_size = x_size
     @y_size = y_size

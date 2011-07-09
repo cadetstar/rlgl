@@ -1,11 +1,11 @@
-class Player
+class Player < Entity
   attr_reader :can_jump
   attr_reader :player_in_control
   @@walk_force = vec2(500,0)
-  @@jump_force = vec2(0,-200)
+  @@jump_force = vec2(0,-140)
   
   @@max_h = 200
-  @@jolt_amt = 100
+  @@jolt_amt = 70
   
   def initialize(window, game_level)
     @body = CP::Body.new(200, CP.moment_for_box(200, 20,40))
@@ -13,20 +13,20 @@ class Player
     @body.p = vec2(200,200)
     
     verts = []
-    verts << vec2(-25,-50)
-    verts << vec2(-25,50)
-    verts << vec2(25,50)
-    verts << vec2(25,-50)
+    verts << vec2(-25,-40)
+    verts << vec2(-25,40)
+    verts << vec2(25,40)
+    verts << vec2(25,-40)
     
     @shape = CP::Shape::Poly.new(@body, verts)
     @shape.e = 0.0
     @shape.u = 0.5
     @shape.collision_type = :player
     
-    game_level.add_entity(@shape, @body)
+    game_level.add_entity(self)
     game_level.add_collision_func(:player, :platform) {@can_jump = true}
     
-    @player_image = Gosu::Image.new(window, './media/Starfighter.bmp')
+    @player_image = Gosu::Image.new(window, './media/player.png')
     @can_jump = true
     @actions = []
     @player_in_control = true
