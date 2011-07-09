@@ -1,11 +1,11 @@
 
 class UI
-  def initialize(actions)
+  def initialize(actions, window)
     @timer_circle_x = 50
     @timer_circle_y = 50
     @circle_size = 30
     @actions = actions.collect{|a| %w(jump jump_right jump_left move_right move_left).include?(a[0]) ? a[0] : nil}.compact
-    
+    @font = Gosu::Font.new(window, Gosu::default_font_name, 16)
   end
   
   def draw(game_level, window)
@@ -20,14 +20,18 @@ class UI
       else
         color = 0xffffff00
       end
+      offset = 0
     else
-      arcdist = 360 / 8.0
+      arcdist = (360 / 8.0)
       color = 0xffff0000
-      @time_left = 7
+      @time_left = 8
+      offset = 22.5
+      t = 'STOP'
+      @font.draw(t, @timer_circle_x-@font.text_width(t)/2.0, @timer_circle_y - @font.height / 2.0, ZOrder::UIText)
     end
     
     (0...@time_left).each do |i|
-      window.draw_triangle(@timer_circle_x, @timer_circle_y, color, @timer_circle_x+Gosu::offset_x(arcdist*i, @circle_size), @timer_circle_y+Gosu::offset_y(arcdist*i,@circle_size), color, @timer_circle_x+Gosu::offset_x(arcdist*(i+1),@circle_size), @timer_circle_y + Gosu::offset_y(arcdist*(i+1),@circle_size),color, ZOrder::UI)
+      window.draw_triangle(@timer_circle_x, @timer_circle_y, color, @timer_circle_x+Gosu::offset_x(arcdist*i+offset, @circle_size), @timer_circle_y+Gosu::offset_y(arcdist*i+offset,@circle_size), color, @timer_circle_x+Gosu::offset_x(arcdist*(i+1)+offset,@circle_size), @timer_circle_y + Gosu::offset_y(arcdist*(i+1)+offset,@circle_size),color, ZOrder::UI)
     end
     
     offset = 125

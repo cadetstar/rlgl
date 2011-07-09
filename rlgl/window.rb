@@ -50,7 +50,7 @@ class GameWindow < Gosu::Window
             @current_level = @menu.select_entry
             @active_screen = 'game'
             @game_level = ActiveGameLevel.new(@current_level, self)
-            @ui = UI.new(@game_level.actions)
+            @ui = UI.new(@game_level.actions, self)
             @player = Player.new(self, @game_level)
           when Gosu::KbEscape
             close
