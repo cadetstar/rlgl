@@ -21,7 +21,7 @@ class GameWindow < Gosu::Window
             @player.move_left
           end
         end
-        @player.update
+        @player.update(@game_level)
         
         @game_level.update(@player)
     end
@@ -50,7 +50,7 @@ class GameWindow < Gosu::Window
             @current_level = @menu.select_entry
             @active_screen = 'game'
             @game_level = ActiveGameLevel.new(@current_level, self)
-            @ui = UI.new
+            @ui = UI.new(@game_level.actions)
             @player = Player.new(self, @game_level)
           when Gosu::KbEscape
             close

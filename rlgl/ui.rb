@@ -1,9 +1,11 @@
 
 class UI
-  def initialize
+  def initialize(actions)
     @timer_circle_x = 50
     @timer_circle_y = 50
     @circle_size = 30
+    @actions = actions.collect{|a| %w(jump jump_right jump_left move_right move_left).include?(a[0]) ? a[0] : nil}.compact
+    
   end
   
   def draw(game_level, window)
@@ -21,6 +23,31 @@ class UI
     
     (0...@time_left).each do |i|
       window.draw_triangle(@timer_circle_x, @timer_circle_y, color, @timer_circle_x+Gosu::offset_x(arcdist*i, @circle_size), @timer_circle_y+Gosu::offset_y(arcdist*i,@circle_size), color, @timer_circle_x+Gosu::offset_x(arcdist*(i+1),@circle_size), @timer_circle_y + Gosu::offset_y(arcdist*(i+1),@circle_size),color, ZOrder::UI)
+    end
+    
+    offset = 125
+    space = 50
+    pos_y = 50
+    
+    @actions.each_with_index do |a,i|
+      pos_x = offset + i*space
+      angle = case a
+        when 'move_right'
+          180
+        when 'move_left'
+          0
+        when 'jump_right'
+          135
+        when 'jump'
+          90
+        when 'jump_left'
+          45
+        else
+          270
+      end
+      window.rotate(angle, pos_x, pos_y) do
+        window.draw_triangle(pos_x - 15, pos_y, 0xff00ff00, pos_x + 5, pos_y - 10, 0xff00ff00, pos_x + 5, pos_y + 10, 0xff00ff00, ZOrder::UI)
+      end
     end
   end
   

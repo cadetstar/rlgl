@@ -32,7 +32,7 @@ class Player
     @player_in_control = true
   end
   
-  def update
+  def update(game_level)
     unless @player_in_control
       unless @actions.empty?
         if Time.now > @actions[0][0]
@@ -41,6 +41,7 @@ class Player
         end
       else
         @player_in_control = true
+        game_level.finished_actions
       end
     end
     
