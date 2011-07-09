@@ -7,10 +7,10 @@ class Player < Entity
   @@max_h = 200
   @@jolt_amt = 70
   
-  def initialize(window, game_level)
+  def initialize(window, game_level, start_pos = {'x' => 200, 'y' => 200})
     @body = CP::Body.new(200, CP.moment_for_box(200, 20,40))
     @body.w_limit = 0
-    @body.p = vec2(200,200)
+    @body.p = vec2(start_pos['x'],start_pos['y'])
     
     verts = []
     verts << vec2(-25,-40)
