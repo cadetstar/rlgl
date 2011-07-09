@@ -7,22 +7,25 @@ class ActiveGameLevel
   
   def initialize(level_info, window)
     @action_interval = 5.0
+    #@action_interval = level_info['action_interval']
     @time_to_next_action = Time.now + @action_interval
     #@actions = [['move_right', 0],['jump',1],['pause',2]]
-    @actions = [['move_right', 0]]
-    @bg_image = Gosu::Image.new(window, './media/grid.png' )
+    #@actions = level_info['actions']
+    @actions = [['move_right', 1]]
+
     @space = CP::Space.new()
     @space.gravity = vec2(0,100)
     @space.damping = 0.95
 
-    @platform = Platform.new(10, 0, 500, 600, 20, window)
+    @platform = Platform.new(10, 400, 500, 800, 20, window)
     #@platform_body = CP::Body.new_static()
     #@platform_body.p = vec2(0,500)
     #@platform_shape = CP::Shape::Poly.new(@platform_body, [vec2(0,0),vec2(0,20),vec2(600,20),vec2(600,0)])
 
     
-    @image = Gosu::Image.new(window, './media/Starfighter.bmp')
-    
+    #@image = Gosu::Image.new(window, './media/Starfighter.bmp')
+    @bg_image = Gosu::Image.new(window, './media/grid.png' )
+
     add_entity(@platform)
     @platform.body.velocity_func() {vec2(0,0)}
     @waiting = false
