@@ -50,7 +50,7 @@ get '/level/edit/:name' do
     end
     @name = level['name']
     puts @info.inspect
-    @action_list = %w(move_left move_right jump jump_right jump_left pause)
+    @action_list = %w(move_left move_right jump jump_right jump_left super_jump pause)
     
     erb :edit
   end

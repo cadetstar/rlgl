@@ -5,7 +5,7 @@ class UI
     @ui_dim = vec2(400,100)
     @factor = 0.4
     @circle_size = 30
-    @actions = actions.collect{|a| %w(jump jump_right jump_left move_right move_left).include?(a[0]) ? a[0] : nil}.compact
+    @actions = actions.collect{|a| %w(jump jump_right jump_left move_right move_left pause super_jump).include?(a[0]) ? a[0] : nil}.compact
     @font = Gosu::Font.new(window, Gosu::default_font_name, 16)
     @timer_images = []
     @timer_images << Gosu::Image.new(window, "#{$preface}media/wifi_4.png", ZOrder::UI)
@@ -29,7 +29,7 @@ class UI
     if t == 0
       @timer_images[0].draw(@timer_base.x, @timer_base.y, ZOrder::UI, @factor, @factor)
     elsif t < 4
-      @timer_images[t-1].draw(@timer_base.x, @timer_base.y, ZOrder::UI, @factor, @factor)
+      @timer_images[t].draw(@timer_base.x, @timer_base.y, ZOrder::UI, @factor, @factor)
     else
       @timer_images[3].draw(@timer_base.x, @timer_base.y, ZOrder::UI, @factor, @factor)
     end
@@ -40,22 +40,31 @@ class UI
     
     @actions.each_with_index do |a,i|
       pos_x = offset + i*space
-      angle = case a
-        when 'move_right'
-          180
-        when 'move_left'
-          0
-        when 'jump_right'
-          135
-        when 'jump'
-          90
-        when 'jump_left'
-          45
-        else
-          270
-      end
-      window.rotate(angle, pos_x, pos_y) do
-        window.draw_triangle(pos_x - 15, pos_y, 0xff00ff00, pos_x + 5, pos_y - 10, 0xff00ff00, pos_x + 5, pos_y + 10, 0xff00ff00, ZOrder::UI)
+      if a == 'super_jump'
+        window.rotate(90, pos_x, pos_y) do
+          window.draw_triangle(pos_x - 15, pos_y, 0xff00ff00, pos_x + 5, pos_y - 10, 0xff00ff00, pos_x + 5, pos_y + 10, 0xff00ff00, ZOrder::UI)
+          window.draw_triangle(pos_x, pos_y, 0xff00ff00, pos_x + 20, pos_y - 10, 0xff00ff00, pos_x + 20, pos_y + 10, 0xff00ff00, ZOrder::UI)
+        end
+      elsif a == 'pause'
+        window.draw_quad(pos_x - 15, pos_y - 15, 0xff00ff00, pos_x + 15, pos_y - 15, 0xff00ff00, pos_x + 15, pos_y + 15, 0xff00ff00, pos_x - 15, pos_y + 15, 0xff00ff00, ZOrder::UI)
+      else
+        angle = case a
+          when 'move_right'
+            180
+          when 'move_left'
+            0
+          when 'jump_right'
+            135
+          when 'jump'
+            90
+          when 'jump_left'
+            45
+          else
+            270
+        end
+        window.rotate(angle, pos_x, pos_y) do
+          window.draw_triangle(pos_x - 15, pos_y, 0xff00ff00, pos_x + 5, pos_y - 10, 0xff00ff00, pos_x + 5, pos_y + 10, 0xff00ff00, ZOrder::UI)
+        end
       end
     end
   end

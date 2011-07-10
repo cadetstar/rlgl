@@ -12,6 +12,7 @@ class Player < Entity
   @@jolt_amt = 800
   @@slow_down = 0.1
   @@min_x = 50
+  @@super_jump_modifier = 1.5
 
   @@max_player_x = 300
   
@@ -107,6 +108,8 @@ class Player < Entity
     case action
       when 'jump'
         jump(true)
+      when 'super_jump'
+        jump(true, true)
       when 'jump_right'
         jolt_right
         jump(true)
@@ -137,9 +140,13 @@ class Player < Entity
     @body.v.x = -@@jolt_amt
   end
   
-  def jump(override = false)
+  def jump(override = false, double=false)
     if @can_jump or override
-      @body.v.y = @@jump_force.y
+      if double
+        @body.v.y = @@jump_force.y * @@super_jump_modifier
+      else
+        @body.v.y = @@jump_force.y
+      end
       @can_jump = false
     end
     #@body.apply_force(@@jump_force, vec2(0,0))
