@@ -19,8 +19,11 @@ class ActiveGameLevel
     #@actions = [['move_right', 1]]
 
     @space = CP::Space.new()
-    @space.gravity = vec2(0,100)
-    @space.damping = 0.95
+    @space.gravity = vec2(0,200)
+#    @space.damping = 0.95
+    @space.iterations = 20
+    
+    CP.bias_coef = 0.5
 
     #@platform = Platform.new(10, 400, 500, 800, 20, window)
     @platforms = Array.new
@@ -28,7 +31,10 @@ class ActiveGameLevel
       next if r['w'].to_i.zero? or r['h'].to_i.zero?
       @platforms << j = Platform.new(@@mass, r['x'].to_i, window.height - r['y'].to_i, r['w'].to_i, r['h'].to_i, window)
       add_entity(j)
+#      puts j.shape.bb
     end
+    
+    @space.rehash_static
     
     @offset_x = 0
     #@platform_body = CP::Body.new_static()
@@ -54,13 +60,18 @@ class ActiveGameLevel
     @space.add_collision_func(s_1, s_2, &block)
   end
   
+  def add_collision_handler(s_1, s_2, handler)
+    @space.add_collision_handler(s_1, s_2, handler)
+  end
+  
   def update(player)
     if !@waiting and Time.now >= @time_to_next_action
       # Do actions
       player.setup_actions(@actions)
       @waiting = true
     end
-    @space.step(1.0/60)
+    
+    @space.step(1.0 / 60)
   end
   
   def finished_actions
@@ -72,5 +83,24 @@ class ActiveGameLevel
     #@image.draw_as_quad(@platform_body.p.x + @platform_shape.vert(0).x,@platform_body.p.y + @platform_shape.vert(0).y,0xffffffff, @platform_body.p.x + @platform_shape.vert(1).x, @platform_body.p.y + @platform_shape.vert(1).y, 0xffffffff, @platform_body.p.x + @platform_shape.vert(2).x, @platform_body.p.y + @platform_shape.vert(2).y, 0xffffffff, @platform_body.p.x + @platform_shape.vert(3).x, @platform_body.p.y + @platform_shape.vert(3).y, 0xffffffff, ZOrder::Platforms)
     @platforms.each {|r| r.draw(self)}
     @bg_image.draw_as_quad(0, 0, 0xffffffff, 800, 0, 0xffffffff, 800, 600, 0xffffffff, 0, 600, 0xffffffff, ZOrder::Platforms - 1)
+  end
+end
+
+class CustomSideHandler < CP::Arbiter
+  def initialize(player)
+    @player = player
+  end
+  
+  def begin(a,b,arbiter)
+    if arbiter.normal(0).y == 1.0
+      @player.can_jump = true
+    end
+    true
+  end
+  
+  def pre_solve(a,b,arbiter)
+    puts "FIres: #{Time.now}"
+    arbiter.u=0
+    true
   end
 end

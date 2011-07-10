@@ -28,7 +28,7 @@ get '/level/edit/:name' do
   else
     filename = "./levels/#{level['file']}"
     unless File.exists?(filename)
-      a = File.new(filename)
+      a = File.new(filename, 'w')
       a.puts {}.to_json
       a.close
     end

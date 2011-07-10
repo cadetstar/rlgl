@@ -35,7 +35,7 @@ class Menu
   end
   
   def select_entry
-    f = File.open("./levels/#{@levels[@selected_level]['file']}")
+    f = File.open("#{$preface}levels/#{@levels[@selected_level]['file']}")
     begin
       JSON.parse(f.readlines.first.to_s)
     rescue
