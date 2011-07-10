@@ -2,7 +2,8 @@ class GameWindow < Gosu::Window
   def initialize
     super 800, 600, false
     self.caption = 'Red Light, Green Light'
-    
+     @icon = Gosu::Image.new(self, "#{$preface}media/wifi_4.ico")
+
     @levels = GameLevels.names
     @menu = Menu.new(@levels, self)
     @active_screen = 'menu'
@@ -78,5 +79,11 @@ class GameWindow < Gosu::Window
     @ui = nil
     @player = nil
     @active_screen = 'menu'
+  end
+  
+  def kill_player
+    @game_level = ActiveGameLevel.new(@current_level, self)
+    @ui = UI.new(@game_level.actions, self)
+    @player = Player.new(self, @game_level, @current_level['start_pos'])
   end
 end

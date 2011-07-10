@@ -28,7 +28,7 @@ class ActiveGameLevel
     CP.bias_coef = 0.5
 
     @space.add_collision_func(:player, :goal) {|k,v,arb| @window.return_to_menu}
-    @space.add_collision_func(:player, :damager) {|k,v,arb| @window.return_to_menu}
+    @space.add_collision_func(:player, :damager) {|k,v,arb| @window.kill_player}
     #@platform = Platform.new(10, 400, 500, 800, 20, window)
     @platforms = Array.new
     @damagers = Array.new
@@ -47,7 +47,7 @@ class ActiveGameLevel
     unless level_info['entities']['damagers'].nil?
       level_info['entities']['damagers'].each do |r|
         next if r['w'].to_i.zero? or r['h'].to_i.zero?
-        @damagers << j = Platform.new(@@mass, r['x'].to_i, window.height - r['y'].to_i, r['w'].to_i, r['h'].to_i, window)
+        @damagers << j = Damager.new(@@mass, r, window)
         add_entity(j)
       end
     end

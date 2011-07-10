@@ -1,4 +1,4 @@
-class Damager < Entity
+class Prop < Entity
   def initialize(mass, detail_hash, window)
     super(mass, detail_hash, window, false)
     self.shape.e = 0.0

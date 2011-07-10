@@ -38,6 +38,7 @@ class Player < Entity
     
     game_level.add_entity(self)
     game_level.add_collision_handler(:player, :platform, CustomSideHandler.new(self))
+    game_level.add_collision_handler(:player, :none, NoHandler.new)
     
     @player_image = Gosu::Image.new(window, "#{$preface}media/player.png")
     @can_jump = true
@@ -47,7 +48,7 @@ class Player < Entity
   
   def update(game_level)
     if @body.p.y > $w.height + 50
-      $w.return_to_menu
+      $w.kill_player
       return
     end
 
@@ -182,4 +183,10 @@ class Player < Entity
     end
   end
   
+end
+
+class NoHandler
+  def begin(a,b, arb)
+    false
+  end
 end

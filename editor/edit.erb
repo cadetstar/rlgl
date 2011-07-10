@@ -1,5 +1,10 @@
 <html>
 <head>
+  <style>
+    input {
+      width: 100px;
+    }
+    </style>
 </head>
 <body>
 <%= link_to "Back", "/" %>
@@ -15,7 +20,7 @@
 <div id="action_holder">
 <% if @info['actions'].is_a? Array %>
   <% @info['actions'].each do |act| %>
-    <p>Action: <%= select_tag "actions[][action]", options_for_select(@action_list, act[0]) %> Delay: <%= text_field_tag "actions[][delay]", act[1] %></p>
+    <p>Action: <%= select_tag "actions[][action]", options_for_select(@action_list, act[0]) %> Delay: <%= text_field_tag "actions[][delay]", act[1] %> -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %></p>
   <% end %>
 <% end %>
 </div>
@@ -40,7 +45,7 @@
       HS: <%= text_field_tag "platforms[][hs]", e['hs'] %>
       VS: <%= text_field_tag "platforms[][vs]", e['vs'] %>
       HT: <%= text_field_tag "platforms[][ht]", e['ht'] %>
-      VT: <%= text_field_tag "platforms[][vt]", e['vt'] %>
+      VT: <%= text_field_tag "platforms[][vt]", e['vt'] %> -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %>
       </p>
     <% end %>
   <% end %>
@@ -61,7 +66,7 @@
       HS: <%= text_field_tag "damagers[][hs]", e['hs'] %>
       VS: <%= text_field_tag "damagers[][vs]", e['vs'] %>
       HT: <%= text_field_tag "damagers[][ht]", e['ht'] %>
-      VT: <%= text_field_tag "damagers[][vt]", e['vt'] %>
+      VT: <%= text_field_tag "damagers[][vt]", e['vt'] %> -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %>
       </p>
     <% end %>
   <% end %>
@@ -81,7 +86,7 @@
       VS: <%= text_field_tag "props[][vs]", e['vs'] %>
       HT: <%= text_field_tag "props[][ht]", e['ht'] %>
       VT: <%= text_field_tag "props[][vt]", e['vt'] %>
-      Interactable? <%= check_box_tag "props[]['present']", 1, e['present'] %></p>
+      Interactable? <%= check_box_tag "props[]['present']", 1, e['present'] %> -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %></p>
     <% end %>
   <% end %>
 </div>
@@ -90,7 +95,7 @@
 </form>
 
 <div style="display:none;" id="new_action">
-  <p>Action: <%= select_tag "actions[][action]", options_for_select(@action_list) %> Delay: <%= text_field_tag "actions[][delay]", 0 %></p>
+  <p>Action: <%= select_tag "actions[][action]", options_for_select(@action_list) %> Delay: <%= text_field_tag "actions[][delay]", 0 %> -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %></p>
 </div>
 <div style="display: none;" id="new_platform">
       <p>X: <%= text_field_tag "platforms[][x]", 0  %>
@@ -100,7 +105,7 @@
       HS: <%= text_field_tag "platforms[][hs]", 0 %>
       VS: <%= text_field_tag "platforms[][vs]", 0 %>
       HT: <%= text_field_tag "platforms[][ht]", 0 %>
-      VT: <%= text_field_tag "platforms[][vt]", 0 %>
+      VT: <%= text_field_tag "platforms[][vt]", 0 %> -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %>
       </p>
 </div>
 <div style="display: none;" id="new_damager">
@@ -114,7 +119,7 @@
       HS: <%= text_field_tag "damagers[][hs]", 0 %>
       VS: <%= text_field_tag "damagers[][vs]", 0 %>
       HT: <%= text_field_tag "damagers[][ht]", 0 %>
-      VT: <%= text_field_tag "damagers[][vt]", 0 %>
+      VT: <%= text_field_tag "damagers[][vt]", 0 %> -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %>
       </p>
 </div>
 <div style="display: none;" id="new_prop">
@@ -127,7 +132,7 @@
       VS: <%= text_field_tag "props[][vs]", 0 %>
       HT: <%= text_field_tag "props[][ht]", 0 %>
       VT: <%= text_field_tag "props[][vt]", 0 %>
-      Interactable? <%= check_box_tag "props[]['present']", 1, false %></p>
+      Interactable? <%= check_box_tag "props[]['present']", 1, false %> -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %></p>
 </div>
 
 <script type="text/javascript">

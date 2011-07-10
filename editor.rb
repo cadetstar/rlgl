@@ -27,7 +27,7 @@ get '/game' do
 end
 
 get '/compile' do
-  `ocra rlgl.rb media/* levels/*`
+  `ocra rlgl.rb media/* levels/* --windows --icon media/wifi_4.ico`
   redirect '/'
 end
 
