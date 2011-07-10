@@ -72,6 +72,7 @@ class EntityDriver
   def update(player)
     if player.normaled_objects.include?(@shape)
       start_y = @position.y
+      start_x = @position.x
     else
       start_y = nil
     end
@@ -95,6 +96,7 @@ class EntityDriver
     @body.p = @position
     if start_y
       player.shape.body.p.y += @position.y - start_y
+      player.shape.body.p.x += @position.x - start_x
     end
     true
   end
