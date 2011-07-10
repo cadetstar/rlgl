@@ -8,10 +8,10 @@ class UI
     @actions = actions.collect{|a| %w(jump jump_right jump_left move_right move_left).include?(a[0]) ? a[0] : nil}.compact
     @font = Gosu::Font.new(window, Gosu::default_font_name, 16)
     @timer_images = []
-    @timer_images << Gosu::Image.new(window, "#{$prefix}media/wifi_4.png", ZOrder::UI)
-    @timer_images << Gosu::Image.new(window, "#{$prefix}media/wifi_3.png", ZOrder::UI)
-    @timer_images << Gosu::Image.new(window, "#{$prefix}media/wifi_2.png", ZOrder::UI)
-    @timer_images << Gosu::Image.new(window, "#{$prefix}media/wifi_1.png", ZOrder::UI)
+    @timer_images << Gosu::Image.new(window, "#{$preface}media/wifi_4.png", ZOrder::UI)
+    @timer_images << Gosu::Image.new(window, "#{$preface}media/wifi_3.png", ZOrder::UI)
+    @timer_images << Gosu::Image.new(window, "#{$preface}media/wifi_2.png", ZOrder::UI)
+    @timer_images << Gosu::Image.new(window, "#{$preface}media/wifi_1.png", ZOrder::UI)
     
     @bgcolor = 0xff000000
   end

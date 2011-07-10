@@ -3,6 +3,7 @@ if ENV["OCRA_EXECUTABLE"]
 else
   $preface = './'
 end
+puts Dir.glob("#{$preface}media/*")
 
 $LOAD_PATH.unshift File.join(File.dirname($0), '/rlgl')
 
