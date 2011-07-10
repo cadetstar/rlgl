@@ -5,7 +5,7 @@ class UI
     @ui_dim = vec2(400,100)
     @factor = 0.4
     @circle_size = 30
-    @actions = actions.collect{|a| %w(jump jump_right jump_left move_right move_left pause super_jump).include?(a[0]) ? a[0] : nil}.compact
+    @actions = actions.collect{|a| %w(jump jump_right jump_left move_right move_left pause super_jump).include?(a[0]) ? a : nil}.compact
     @font = Gosu::Font.new(window, Gosu::default_font_name, 16)
     @timer_images = []
     @timer_images << Gosu::Image.new(window, "#{$preface}media/wifi_4.png", ZOrder::UI)
@@ -35,11 +35,12 @@ class UI
     end
 
     offset = 125
-    space = 50
+    space = 100
     pos_y = 50
     
-    @actions.each_with_index do |a,i|
-      pos_x = offset + i*space
+    @actions.each_with_index do |act,i|
+      a = act[0]
+      pos_x = offset + act[1].to_f*space
       if a == 'super_jump'
         window.rotate(90, pos_x, pos_y) do
           window.draw_triangle(pos_x - 15, pos_y, 0xff00ff00, pos_x + 5, pos_y - 10, 0xff00ff00, pos_x + 5, pos_y + 10, 0xff00ff00, ZOrder::UI)

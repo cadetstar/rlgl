@@ -62,7 +62,7 @@ class ActiveGameLevel
     #@platform_shape = CP::Shape::Poly.new(@platform_body, [vec2(0,0),vec2(0,20),vec2(600,20),vec2(600,0)])
 
     
-    @bg_image = Gosu::Image.new(window, "#{$preface}media/grid.png" )
+    @bg_image = Gosu::Image.new(window, "#{$preface}media/Space.png" )
 
     #add_entity(@platform)
 #    @platform.body.velocity_func() {vec2(0,0)}

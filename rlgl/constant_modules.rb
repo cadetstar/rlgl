@@ -1,3 +1,3 @@
 module ZOrder
-  Background, Platforms, Player, Menu, UIBackground, UI, UIText, UIMask = *0..7
+  Background, Platforms, GoalBorder, Goal, Player, Menu, UIBackground, UI, UIText, UIMask = *0..8
 end

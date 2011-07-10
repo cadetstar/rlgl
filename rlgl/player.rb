@@ -98,7 +98,7 @@ class Player < Entity
   
   def setup_actions(actions)
     @actions = []
-    actions.each do |act,t|
+    actions.sort_by{|a,b| b}.each do |act,t|
       @actions << [Time.now + t.to_f, act]
     end
     @player_in_control = false

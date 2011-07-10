@@ -45,12 +45,12 @@ class Entity
     end
   end
 
-  def draw(game_level)
+  def draw(game_level, zorder = ZOrder::Platforms)
     @image.draw_as_quad(@body.p.x - game_level.offset_x + @shape.vert(0).x, @body.p.y + @shape.vert(0).y, @color,
                         @body.p.x - game_level.offset_x + @shape.vert(1).x, @body.p.y + @shape.vert(1).y, @color,
                         @body.p.x - game_level.offset_x + @shape.vert(2).x, @body.p.y + @shape.vert(2).y, @color,
                         @body.p.x - game_level.offset_x + @shape.vert(3).x, @body.p.y + @shape.vert(3).y, @color,
-                        ZOrder::Platforms)
+                        zorder)
   end
 end
 
