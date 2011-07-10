@@ -3,7 +3,11 @@ class Damager < Entity
     super(mass, detail_hash, window, false)
     self.shape.e = 0.0
     self.shape.u = 0.5
-    self.shape.collision_type = :damager
+    if !detail_hash['present'].nil? and detail_hash['present'].to_i == 1
+      self.shape.collision_type = :platform
+    else
+      self.shape.collision_type = :none #this doesn't work! change it!
+    end
     @image = Gosu::Image.new(window, "#{$preface}media/#{detail_hash[i]}.png")
     @rot = detail_hash[r].to_f
     unless @rot.nil?
