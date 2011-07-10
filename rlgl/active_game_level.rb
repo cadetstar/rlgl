@@ -21,7 +21,7 @@ class ActiveGameLevel
     #@actions = [['move_right', 1]]
 
     @space = CP::Space.new()
-    @space.gravity = vec2(0,400)
+    @space.gravity = vec2(0,980)
 #    @space.damping = 0.95
     @space.iterations = 20
     
@@ -36,8 +36,9 @@ class ActiveGameLevel
     unless level_info['entities']['platforms'].nil?
       level_info['entities']['platforms'].each do |r|
         next if r['w'].to_i.zero? or r['h'].to_i.zero?
-        @platforms << j = Platform.new(@@mass, r['x'].to_i, window.height - r['y'].to_i, r['w'].to_i, r['h'].to_i, window)
+        @platforms << j = Platform.new(@@mass, r, window)
         add_entity(j)
+        add_entity(j.pin) unless j.pin.nil?
 #      puts j.shape.bb
       end
     end
@@ -52,7 +53,7 @@ class ActiveGameLevel
     end
     g = level_info['entities']['goal']
     unless g.nil?
-      @goal = Goal.new(@@mass, g['x'].to_i, window.height - g['y'].to_i, g['w'].to_i, g['h'].to_i, window) unless g['w'].to_i.zero? or g['h'].to_i.zero?
+      @goal = Goal.new(@@mass, g, window) unless g['w'].to_i.zero? or g['h'].to_i.zero?
       add_entity(@goal)
     end
     @offset_x = 0
@@ -61,8 +62,7 @@ class ActiveGameLevel
     #@platform_shape = CP::Shape::Poly.new(@platform_body, [vec2(0,0),vec2(0,20),vec2(600,20),vec2(600,0)])
 
     
-    #@image = Gosu::Image.new(window, './media/Starfighter.bmp')
-    @bg_image = Gosu::Image.new(window, './media/grid.png' )
+    @bg_image = Gosu::Image.new(window, "#{$preface}media/grid.png" )
 
     #add_entity(@platform)
 #    @platform.body.velocity_func() {vec2(0,0)}
@@ -89,6 +89,12 @@ class ActiveGameLevel
       player.setup_actions(@actions)
       @waiting = true
     end
+    @platforms.each do |r|
+      if r.update(player)
+        @space.rehash_shape(r.shape)
+      end
+    end
+    
     @space.step(1.0/60)
   end
   
@@ -113,12 +119,16 @@ class CustomSideHandler < CP::Arbiter
   
   def begin(a,b,arbiter)
     a.body.a = 0
-    puts arbiter.normal(0).y
     if arbiter.normal(0).y.round(1) == 1.0
       @player.can_jump = true
     end
+    
+    @player.normaled_objects |= [b]
     true
   end
   
+  def separate(a,b)
+    @player.normaled_objects -= [b]
+  end
 
 end

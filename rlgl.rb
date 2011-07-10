@@ -3,6 +3,7 @@ if ENV["OCRA_EXECUTABLE"]
 else
   $preface = './'
 end
+
 $LOAD_PATH.unshift File.join(File.dirname($0), '/rlgl')
 
 require 'main'

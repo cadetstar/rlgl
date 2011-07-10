@@ -36,7 +36,12 @@
       <p>X: <%= text_field_tag "platforms[][x]", e['x']  %>
       Y: <%= text_field_tag "platforms[][y]", e['y']  %>
       H: <%= text_field_tag "platforms[][h]", e['h']  %>
-      W: <%= text_field_tag "platforms[][w]", e['w']  %></p>
+      W: <%= text_field_tag "platforms[][w]", e['w']  %>
+      HS: <%= text_field_tag "platforms[][hs]", e['hs'] %>
+      VS: <%= text_field_tag "platforms[][vs]", e['vs'] %>
+      HT: <%= text_field_tag "platforms[][ht]", e['ht'] %>
+      VT: <%= text_field_tag "platforms[][vt]", e['vt'] %>
+      </p>
     <% end %>
   <% end %>
 </div>
@@ -52,7 +57,12 @@
       W: <%= text_field_tag "damagers[][w]", e['w']  %>
       ROT: <%= text_field_tag "damagers[][r]", e['r']  %>
       DMG: <%= text_field_tag "damagers[][d]", e['d']  %>
-      IMG: <%= text_field_tag "damagers[][i]", e['i']  %></p>
+      IMG: <%= text_field_tag "damagers[][i]", e['i']  %>
+      HS: <%= text_field_tag "damagers[][hs]", e['hs'] %>
+      VS: <%= text_field_tag "damagers[][vs]", e['vs'] %>
+      HT: <%= text_field_tag "damagers[][ht]", e['ht'] %>
+      VT: <%= text_field_tag "damagers[][vt]", e['vt'] %>
+      </p>
     <% end %>
   <% end %>
 </div>
@@ -67,6 +77,10 @@
       H: <%= text_field_tag "props[][h]", e['h']  %>
       ROT: <%= text_field_tag "props[][r]", e['r']  %>
       IMG: <%= text_field_tag "props[][i]", e['i']  %>
+      HS: <%= text_field_tag "props[][hs]", e['hs'] %>
+      VS: <%= text_field_tag "props[][vs]", e['vs'] %>
+      HT: <%= text_field_tag "props[][ht]", e['ht'] %>
+      VT: <%= text_field_tag "props[][vt]", e['vt'] %>
       Interactable? <%= check_box_tag "props[]['present']", 1, e['present'] %></p>
     <% end %>
   <% end %>
@@ -82,7 +96,12 @@
       <p>X: <%= text_field_tag "platforms[][x]", 0  %>
       Y: <%= text_field_tag "platforms[][y]", 0  %>
       H: <%= text_field_tag "platforms[][h]", 0  %>
-      W: <%= text_field_tag "platforms[][w]", 0  %></p>
+      W: <%= text_field_tag "platforms[][w]", 0  %>
+      HS: <%= text_field_tag "platforms[][hs]", 0 %>
+      VS: <%= text_field_tag "platforms[][vs]", 0 %>
+      HT: <%= text_field_tag "platforms[][ht]", 0 %>
+      VT: <%= text_field_tag "platforms[][vt]", 0 %>
+      </p>
 </div>
 <div style="display: none;" id="new_damager">
       <p>X: <%= text_field_tag "damagers[][x]", 0  %>
@@ -91,7 +110,12 @@
       W: <%= text_field_tag "damagers[][w]", 0  %>
       ROT: <%= text_field_tag "damagers[][r]", 0  %>
       DMG: <%= text_field_tag "damagers[][d]", 0  %>
-      IMG: <%= text_field_tag "damagers[][i]", ''  %></p>
+      IMG: <%= text_field_tag "damagers[][i]", ''  %>
+      HS: <%= text_field_tag "damagers[][hs]", 0 %>
+      VS: <%= text_field_tag "damagers[][vs]", 0 %>
+      HT: <%= text_field_tag "damagers[][ht]", 0 %>
+      VT: <%= text_field_tag "damagers[][vt]", 0 %>
+      </p>
 </div>
 <div style="display: none;" id="new_prop">
       <p>X: <%= text_field_tag "props[][x]", 0  %>
@@ -99,6 +123,10 @@
       H: <%= text_field_tag "props[][h]", 0  %>
       ROT: <%= text_field_tag "props[][r]", 0  %>
       IMG: <%= text_field_tag "props[][i]", ''  %>
+      HS: <%= text_field_tag "props[][hs]", 0 %>
+      VS: <%= text_field_tag "props[][vs]", 0 %>
+      HT: <%= text_field_tag "props[][ht]", 0 %>
+      VT: <%= text_field_tag "props[][vt]", 0 %>
       Interactable? <%= check_box_tag "props[]['present']", 1, false %></p>
 </div>
 

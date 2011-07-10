@@ -2,15 +2,17 @@ class Player < Entity
   attr_reader :player_in_control
   attr_accessor :can_jump
   attr_reader :shape
+  attr_accessor :normaled_objects
   
-  @@walk_force = vec2(500,0)
-  @@jump_force = vec2(0,-340)
+  @@walk_force = vec2(500,0)  
+  @@jump_force = vec2(0,-500)
+  @@braking_force = vec2(1500,0)
   
   @@max_h = 500
   @@jolt_amt = 300
   @@slow_down = 0.1
 
-  @@max_player_x = 100
+  @@max_player_x = 150
   
   def initialize(window, game_level, start_pos = {'x' => 200, 'y' => 200})
     @body = CP::Body.new(200, CP.moment_for_box(200, 50,80))
@@ -19,6 +21,7 @@ class Player < Entity
     height = 80
     @body.p = vec2(start_pos['x'].to_i + width/2.0,window.height - start_pos['y'].to_i - height/2.0)
     
+    @normaled_objects = []
     verts = []
     
     verts << vec2(-width/2.0,-height/2.0)
@@ -28,13 +31,13 @@ class Player < Entity
     
     @shape = CP::Shape::Poly.new(@body, verts)
     @shape.e = 0.0
-    @shape.u = 0.2
+    @shape.u = 0.20
     @shape.collision_type = :player
     
     game_level.add_entity(self)
     game_level.add_collision_handler(:player, :platform, CustomSideHandler.new(self))
     
-    @player_image = Gosu::Image.new(window, './media/player.png')
+    @player_image = Gosu::Image.new(window, "#{$preface}media/player.png")
     @can_jump = true
     @actions = []
     @player_in_control = true
@@ -132,25 +135,33 @@ class Player < Entity
   
   def jump(override = false)
     if @can_jump or override
-      @body.v += @@jump_force
+      @body.v.y = @@jump_force.y
       @can_jump = false
     end
     #@body.apply_force(@@jump_force, vec2(0,0))
   end
   
   def move_right
-    pre_max = @body.v.x
-    @body.apply_impulse(@@walk_force, vec2(0,0))
-    if @body.v.x > @@max_player_x
-      @body.v.x = pre_max
+    if @body.v.x > 0
+      pre_max = @body.v.x
+      @body.apply_impulse(@@walk_force, vec2(0,0))
+      if @body.v.x > @@max_player_x
+        @body.v.x = pre_max
+      end
+    else
+      @body.apply_impulse(@@braking_force, vec2(0,0))
     end
   end
   
   def move_left
-    pre_max = @body.v.x
-    @body.apply_impulse(-@@walk_force, vec2(0,0))
-    if @body.v.x < -@@max_player_x
-      @body.v.x = pre_max
+    if @body.v.x < 0
+      pre_max = @body.v.x
+      @body.apply_impulse(-@@walk_force, vec2(0,0))
+      if @body.v.x < -@@max_player_x
+        @body.v.x = pre_max
+      end
+    else
+      @body.apply_impulse(-@@braking_force, vec2(0,0))
     end
   end
   

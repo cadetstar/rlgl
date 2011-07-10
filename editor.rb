@@ -22,6 +22,15 @@ get '/levels' do
   erb :index
 end
 
+get '/game' do
+  send_file('./rlgl.exe', :filename => "rlgl.exe")
+end
+
+get '/compile' do
+  `ocra rlgl.rb media/* levels/*`
+  redirect '/'
+end
+
 get '/level/edit/:name' do
   unless level = GameLevels.names.select{|l| l['name'] == params[:name]}.first
     'Nothing there.<br /><a href="/">Back</a>'

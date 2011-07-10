@@ -2,17 +2,29 @@ class Entity
   attr_accessor :shape
   attr_accessor :body
   attr_accessor :image
-  def initialize (mass, x_pos, y_pos, x_size, y_size, window, movable = true)
-    if movable
-      @body  = CP::Body.new(mass, CP.moment_for_box(mass, x_size, y_size))
+  attr_reader :pin
+  def initialize (mass, detail_hash, window, movable = true)
+    x_pos = detail_hash['x'].to_i
+    y_pos = window.height - detail_hash['y'].to_i
+    x_size = detail_hash['w'].to_i
+    y_size = detail_hash['h'].to_i
+    hs = detail_hash['hs'].to_f
+    vs = detail_hash['vs'].to_f
+    ht = detail_hash['ht'].to_i
+    vt = detail_hash['vt'].to_i
+    
+    if movable or !hs.to_f.zero? or !vs.to_f.zero?
+#      @body  = CP::Body.new(mass, CP::INFINITY)#CP.moment_for_box(mass, x_size, y_size))
     else
-      @body  = CP::Body.new_static()
-      @body.velocity_func() { |body, gravity, damping, dt| vec2(0,0)}
     end
+    @body  = CP::Body.new_static()
+    @body.velocity_func() { |body, gravity, damping, dt| vec2(0,0)}
     @x_size = x_size
     @y_size = y_size
     x_off = @x_size / 2.0
     y_off = @y_size / 2.0
+    
+    @driver = nil
     
     @body.p = vec2(x_pos + x_off, y_pos - y_off)
     @vecs = Array.new
@@ -20,12 +32,17 @@ class Entity
     @shape = CP::Shape::Poly.new(@body, @vecs)
     @shape.e = 0.0
     @shape.bb
-    @image = Gosu::Image.new(window, './media/block.png')
+    @image = Gosu::Image.new(window, "#{$preface}media/block.png")
     @color = 0xffaaaaaa
+    unless hs.to_f.zero? and vs.to_f.zero?
+      @driver = EntityDriver.new(@body, @shape, hs, vs, ht, vt)
+    end
   end
 
-  def update
-
+  def update(player)
+    if @driver
+      @driver.update(player)
+    end
   end
 
   def draw(game_level)
@@ -36,3 +53,51 @@ class Entity
                         ZOrder::Platforms)
   end
 end
+
+class EntityDriver
+  def initialize(body, shape, hs, vs, ht, vt)
+    puts @position = vec2(body.p.x,body.p.y)
+    puts @base_position = vec2(body.p.x,body.p.y)
+    
+    @body = body
+    @shape = shape
+    @hs = hs
+    @vs = vs
+    @ht = ht
+    @vt = vt
+    @hsign = 1
+    @vsign = 1
+  end
+  
+  def update(player)
+    if player.normaled_objects.include?(@shape)
+      start_y = @position.y
+    else
+      start_y = nil
+    end
+    
+    @position += vec2(@hs*@hsign/60, @vs*@vsign/60)
+    if @position.x > @base_position.x + @ht / 2.0
+      @position.x = @base_position.x + @ht/2.0
+      @hsign = -1
+    elsif @position.x < @base_position.x - @ht / 2.0
+      @position.x = @base_position.x - @ht / 2.0
+      @hsign = 1
+    end
+    
+    if @position.y > @base_position.y + @vt / 2.0
+      @position.y = @base_position.y + @vt/2.0
+      @vsign = -1
+    elsif @position.y < @base_position.y - @vt/2.0
+      @position.y = @base_position.y - @vt/2.0
+      @vsign = 1
+    end
+    @body.p = @position
+    if start_y
+      player.shape.body.p.y += @position.y - start_y
+    end
+    true
+  end
+end
+
+    
