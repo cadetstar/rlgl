@@ -38,6 +38,14 @@ class GameWindow < Gosu::Window
     end
   end
   
+  def current_action
+    if @game_level.time_to_next_action < Time.now
+      @player.current_action
+    else
+      nil
+    end
+  end
+  
   def draw
     case @active_screen
       when 'menu'

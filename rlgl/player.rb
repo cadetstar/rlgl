@@ -3,6 +3,7 @@ class Player < Entity
   attr_accessor :can_jump
   attr_reader :shape
   attr_accessor :normaled_objects
+  attr_reader :current_action
   
   @@walk_force = vec2(500,0)  
   @@jump_force = vec2(0,-500)
@@ -45,6 +46,7 @@ class Player < Entity
     @can_jump = true
     @actions = []
     @player_in_control = true
+    @current_action = nil
   end
   
   def update(game_level)
@@ -56,6 +58,8 @@ class Player < Entity
     unless @player_in_control
       unless @actions.empty?
         if Time.now > @actions[0][0]
+          @current_action ||= -1
+          @current_action += 1
           self.perform_action(@actions[0][1])
           @actions = @actions[1..-1]
         end
@@ -100,6 +104,7 @@ class Player < Entity
   
   def setup_actions(actions)
     @actions = []
+    @current_action = -1
     actions.sort_by{|a,b| b}.each do |act,t|
       @actions << [Time.now + t.to_f, act]
     end
