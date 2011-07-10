@@ -21,8 +21,7 @@ class ProjectileSpawn < Prop
   def update
     @projectiles.each do |r|
       if r.driver.dead
-        @window.space.remove_body r.body
-        @window.space.remove_shape r.shape
+        @game_level.remove_object(r)
         @projectiles.delete r
       else
         r.driver.update
@@ -35,6 +34,7 @@ class ProjectileSpawn < Prop
       @t = @ttf
     end
   end
+  
   def draw(game_level)
     super(game_level)
     @projectiles.each{|s| s.draw(game_level)}

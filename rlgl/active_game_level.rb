@@ -95,6 +95,11 @@ class ActiveGameLevel
     e.shape.bb
   end
   
+  def remove_object(r)
+    @space.remove_body r.body
+    @space.remove_shape r.shape
+  end
+  
   def add_collision_func(s_1, s_2, &block)
     @space.add_collision_func(s_1, s_2, &block)
   end
