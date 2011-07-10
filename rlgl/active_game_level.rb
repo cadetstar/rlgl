@@ -21,7 +21,7 @@ class ActiveGameLevel
     #@actions = [['move_right', 1]]
 
     @space = CP::Space.new()
-    @space.gravity = vec2(0,200)
+    @space.gravity = vec2(0,400)
 #    @space.damping = 0.95
     @space.iterations = 20
     
@@ -112,15 +112,13 @@ class CustomSideHandler < CP::Arbiter
   end
   
   def begin(a,b,arbiter)
-    if arbiter.normal(0).y == 1.0
+    a.body.a = 0
+    puts arbiter.normal(0).y
+    if arbiter.normal(0).y.round(1) == 1.0
       @player.can_jump = true
     end
     true
   end
   
-  def pre_solve(a,b,arbiter)
-    puts "FIres: #{Time.now}"
-    arbiter.u=0
-    true
-  end
+
 end

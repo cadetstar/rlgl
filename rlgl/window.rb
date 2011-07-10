@@ -20,9 +20,10 @@ class GameWindow < Gosu::Window
             @player.move_left
           end
         end
-        @player.update(@game_level)
-        
         @game_level.update(@player)
+        if @active_screen == 'game'
+          @player.update(@game_level)
+        end
     end
   end
   
