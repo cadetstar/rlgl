@@ -4,6 +4,7 @@ require 'chipmunk'
 
 require 'entity'
 require 'platform'
+require 'goal'
 require 'window'
 require 'player'
 require 'active_game_level'
