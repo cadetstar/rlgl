@@ -56,8 +56,8 @@ end
 
 class EntityDriver
   def initialize(body, shape, hs, vs, ht, vt)
-    puts @position = vec2(body.p.x,body.p.y)
-    puts @base_position = vec2(body.p.x,body.p.y)
+    @position = vec2(body.p.x,body.p.y)
+    @base_position = vec2(body.p.x,body.p.y)
     
     @body = body
     @shape = shape
@@ -72,6 +72,7 @@ class EntityDriver
   def update(player)
     if player.normaled_objects.include?(@shape)
       start_y = @position.y
+      start_x = @position.x
     else
       start_y = nil
     end
@@ -95,6 +96,7 @@ class EntityDriver
     @body.p = @position
     if start_y
       player.shape.body.p.y += @position.y - start_y
+      player.shape.body.p.x += @position.x - start_x
     end
     true
   end

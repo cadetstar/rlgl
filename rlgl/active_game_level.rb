@@ -13,7 +13,7 @@ class ActiveGameLevel
 
     #@action_interval = 5.0
     @action_interval = level_info['action_interval'].to_f
-    @time_to_next_action = Time.now + @action_interval.to_f
+    @time_to_next_action = Time.now + @action_interval
     @width = level_info['width'].to_i
     
     #@actions = [['move_right', 0],['jump',1],['pause',2]]
@@ -22,7 +22,7 @@ class ActiveGameLevel
 
     @space = CP::Space.new()
     @space.gravity = vec2(0,980)
-#    @space.damping = 0.95
+    @space.damping = 0.90
     @space.iterations = 20
     
     CP.bias_coef = 0.5
