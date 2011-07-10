@@ -21,8 +21,11 @@ class ActiveGameLevel
     #@actions = [['move_right', 1]]
 
     @space = CP::Space.new()
-    @space.gravity = vec2(0,500)
-    @space.damping = 0.95
+    @space.gravity = vec2(0,200)
+#    @space.damping = 0.95
+    @space.iterations = 20
+    
+    CP.bias_coef = 0.5
 
     @space.add_collision_func(:player, :goal) {|k,v,arb| @window.return_to_menu}
     @space.add_collision_func(:player, :damager) {|k,v,arb| @window.return_to_menu}
@@ -35,8 +38,11 @@ class ActiveGameLevel
         next if r['w'].to_i.zero? or r['h'].to_i.zero?
         @platforms << j = Platform.new(@@mass, r['x'].to_i, window.height - r['y'].to_i, r['w'].to_i, r['h'].to_i, window)
         add_entity(j)
+#      puts j.shape.bb
       end
     end
+    @space.rehash_static
+    
     unless level_info['entities']['damagers'].nil?
       level_info['entities']['damagers'].each do |r|
         next if r['w'].to_i.zero? or r['h'].to_i.zero?
@@ -73,6 +79,10 @@ class ActiveGameLevel
     @space.add_collision_func(s_1, s_2, &block)
   end
   
+  def add_collision_handler(s_1, s_2, handler)
+    @space.add_collision_handler(s_1, s_2, handler)
+  end
+  
   def update(player)
     if !@waiting and Time.now >= @time_to_next_action
       # Do actions
@@ -93,5 +103,24 @@ class ActiveGameLevel
     @damagers.each {|r| r.draw(self)}
     @goal.draw(self)
     @bg_image.draw_as_quad(0, 0, 0xffffffff, 800, 0, 0xffffffff, 800, 600, 0xffffffff, 0, 600, 0xffffffff, ZOrder::Platforms - 1)
+  end
+end
+
+class CustomSideHandler < CP::Arbiter
+  def initialize(player)
+    @player = player
+  end
+  
+  def begin(a,b,arbiter)
+    if arbiter.normal(0).y == 1.0
+      @player.can_jump = true
+    end
+    true
+  end
+  
+  def pre_solve(a,b,arbiter)
+    puts "FIres: #{Time.now}"
+    arbiter.u=0
+    true
   end
 end

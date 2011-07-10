@@ -1,6 +1,8 @@
 class Player < Entity
-  attr_reader :can_jump
   attr_reader :player_in_control
+  attr_accessor :can_jump
+  attr_reader :shape
+  
   @@walk_force = vec2(500,0)
   @@jump_force = vec2(0,-140)
   
@@ -10,13 +12,16 @@ class Player < Entity
   def initialize(window, game_level, start_pos = {'x' => 200, 'y' => 200})
     @body = CP::Body.new(200, CP.moment_for_box(200, 50,80))
     @body.w_limit = 0
-    @body.p = vec2(start_pos['x'].to_i,window.height - start_pos['y'].to_i - 80)
+    width = 50
+    height = 80
+    @body.p = vec2(start_pos['x'].to_i + width/2.0,window.height - start_pos['y'].to_i - height/2.0)
     
     verts = []
-    verts << vec2(0,0)
-    verts << vec2(0,80)
-    verts << vec2(50,80)
-    verts << vec2(50,0)
+    
+    verts << vec2(-width/2.0,-height/2.0)
+    verts << vec2(-width/2.0,height/2.0)
+    verts << vec2(width/2.0,height/2.0)
+    verts << vec2(width/2.0,-height/2.0)
     
     @shape = CP::Shape::Poly.new(@body, verts)
     @shape.e = 0.0
@@ -24,7 +29,7 @@ class Player < Entity
     @shape.collision_type = :player
     
     game_level.add_entity(self)
-    game_level.add_collision_func(:player, :platform) {|k,v,arb| if arb.normal(0).y.to_i == 1 then @can_jump = true end;true}
+    game_level.add_collision_handler(:player, :platform, CustomSideHandler.new(self))
     
     @player_image = Gosu::Image.new(window, './media/player.png')
     @can_jump = true

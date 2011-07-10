@@ -9,12 +9,17 @@ class Entity
       @body  = CP::Body.new_static()
       @body.velocity_func() { |body, gravity, damping, dt| vec2(0,0)}
     end
-    @body.p = vec2(x_pos, y_pos - y_size)
     @x_size = x_size
     @y_size = y_size
+    x_off = @x_size / 2.0
+    y_off = @y_size / 2.0
+    
+    @body.p = vec2(x_pos + x_off, y_pos - y_off)
     @vecs = Array.new
-    @vecs = [vec2(0,0),vec2(0,y_size),vec2(x_size,y_size),vec2(x_size,0)]
+    @vecs = [vec2(-x_off,-y_off),vec2(-x_off,y_off),vec2(x_off,y_off),vec2(x_off,-y_off)]
     @shape = CP::Shape::Poly.new(@body, @vecs)
+    @shape.e = 0.0
+    @shape.bb
     @image = Gosu::Image.new(window, './media/block.png')
     @color = 0xffaaaaaa
   end
