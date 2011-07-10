@@ -1,1 +1,1 @@
-
+{"action_interval":"","start_pos":{"x":"0","y":"0"},"width":"","actions":[["move_right","0"]],"entities":{"goal":{"x":"0","y":"0","h":"0","w":"0","id":""},"platforms":null,"damagers":null,"props":null,"buttons":null}}

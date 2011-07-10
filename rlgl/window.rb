@@ -7,23 +7,28 @@ class GameWindow < Gosu::Window
     @levels = GameLevels.names
     @menu = Menu.new(@levels, self)
     @active_screen = 'menu'
+    
+    @death_font = Gosu::Font.new(self, "#{$preface}media/BLACKLTR.ttf", 128)
+    @t = "You are DEAD!"
+    @render_x = (self.width - @death_font.text_width(@t)) / 2.0
   end
   
   def update
     case @active_screen
       when 'game'
-        
-        if @player.player_in_control
-          if button_down? Gosu::KbRight
-            @player.move_right
+        unless @dead
+          if @player.player_in_control
+            if button_down? Gosu::KbRight
+              @player.move_right
+            end
+            if button_down? Gosu::KbLeft
+              @player.move_left
+            end
           end
-          if button_down? Gosu::KbLeft
-            @player.move_left
+          @game_level.update(@player)
+          if @active_screen == 'game'
+            @player.update(@game_level)
           end
-        end
-        @game_level.update(@player)
-        if @active_screen == 'game'
-          @player.update(@game_level)
         end
     end
   end
@@ -33,9 +38,18 @@ class GameWindow < Gosu::Window
       when 'menu'
         @menu.draw(self)
       when 'game'
-        @game_level.draw
-        @ui.draw(@game_level, self)
-        @player.draw(@game_level)
+        if @dead
+          self.draw_quad(0,0,@dead,self.width,0,@dead,self.width,self.height,@dead_bot,0,self.height,@dead_bot,ZOrder::Dead)
+          @death_font.draw(@t, @render_x, (self.height - @death_font.height)/2.0, ZOrder::DeadText)
+          @counter -= 1
+          if @counter <= 0
+            self.regen_level
+          end
+        else
+          @game_level.draw
+          @ui.draw(@game_level, self)
+          @player.draw(@game_level)
+        end
     end
   end
   
@@ -50,9 +64,7 @@ class GameWindow < Gosu::Window
           when Gosu::KbEnter, Gosu::KbReturn
             @current_level = @menu.select_entry
             @active_screen = 'game'
-            @game_level = ActiveGameLevel.new(@current_level, self)
-            @ui = UI.new(@game_level.actions, self)
-            @player = Player.new(self, @game_level, @current_level['start_pos'])
+            self.regen_level
           when Gosu::KbEscape
             close
           else
@@ -82,6 +94,13 @@ class GameWindow < Gosu::Window
   end
   
   def kill_player
+    @dead = 0xffff0000
+    @dead_bot = 0x00ff0000
+    @counter = 120
+  end
+    
+  def regen_level
+    @dead = nil
     @game_level = ActiveGameLevel.new(@current_level, self)
     @ui = UI.new(@game_level.actions, self)
     @player = Player.new(self, @game_level, @current_level['start_pos'])
