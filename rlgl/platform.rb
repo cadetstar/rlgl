@@ -4,5 +4,6 @@ class Platform < Entity
     self.shape.e = 0.0
     self.shape.u = 0.2
     self.shape.collision_type = :platform
+    self.shape.group = 1
   end
 end

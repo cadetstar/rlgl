@@ -9,10 +9,11 @@ class Player < Entity
   @@braking_force = vec2(1500,0)
   
   @@max_h = 500
-  @@jolt_amt = 300
+  @@jolt_amt = 800
   @@slow_down = 0.1
+  @@min_x = 50
 
-  @@max_player_x = 150
+  @@max_player_x = 300
   
   def initialize(window, game_level, start_pos = {'x' => 200, 'y' => 200})
     @body = CP::Body.new(200, CP.moment_for_box(200, 50,80))
@@ -31,7 +32,7 @@ class Player < Entity
     
     @shape = CP::Shape::Poly.new(@body, verts)
     @shape.e = 0.0
-    @shape.u = 0.20
+    @shape.u = 0.0
     @shape.collision_type = :player
     
     game_level.add_entity(self)
@@ -67,6 +68,9 @@ class Player < Entity
       end
       if @body.v.x < -@@max_player_x
         @body.v.x = [@body.v.x + @@slow_down, -@@max_player_x].min
+      end
+      if @body.v.x.abs < 5.0
+        @body.v.x = 0.0
       end
     else
       if @body.v.x > @@max_h
@@ -143,6 +147,9 @@ class Player < Entity
   
   def move_right
     if @body.v.x > 0
+      if @body.v.x < @@min_x
+        @body.v.x = @@min_x
+      end
       pre_max = @body.v.x
       @body.apply_impulse(@@walk_force, vec2(0,0))
       if @body.v.x > @@max_player_x
@@ -155,6 +162,9 @@ class Player < Entity
   
   def move_left
     if @body.v.x < 0
+      if @body.v.x > -@@min_x
+        @body.v.x = -@@min_x
+      end
       pre_max = @body.v.x
       @body.apply_impulse(-@@walk_force, vec2(0,0))
       if @body.v.x < -@@max_player_x

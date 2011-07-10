@@ -56,8 +56,8 @@ end
 
 class EntityDriver
   def initialize(body, shape, hs, vs, ht, vt)
-    puts @position = vec2(body.p.x,body.p.y)
-    puts @base_position = vec2(body.p.x,body.p.y)
+    @position = vec2(body.p.x,body.p.y)
+    @base_position = vec2(body.p.x,body.p.y)
     
     @body = body
     @shape = shape
