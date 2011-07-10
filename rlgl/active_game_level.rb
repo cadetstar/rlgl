@@ -33,6 +33,7 @@ class ActiveGameLevel
     @platforms = Array.new
     @damagers = Array.new
     @props  = Array.new
+    @spawners = Array.new
     @buttons = []
     unless level_info['entities']['platforms'].nil?
       level_info['entities']['platforms'].each do |r|
@@ -55,6 +56,13 @@ class ActiveGameLevel
       level_info['entities']['buttons'].each do |r|
         next if r['w'].to_i.zero? or r['h'].to_i.zero?
         @buttons << j = Button.new(@@mass, r, window, @space, self)
+        add_entity(j)
+      end
+    end
+    unless level_info['entities']['spawners'].nil?
+      level_info['entities']['spawners'].each do |r|
+        next if r['w'].to_i.zero? or r['h'].to_i.zero?
+        @spawners << j = ProjectileSpawn.new(@@mass, r, window)
         add_entity(j)
       end
     end
@@ -128,6 +136,7 @@ class ActiveGameLevel
     @platforms.each {|r| r.draw(self)}
     @damagers.each {|r| r.draw(self)}
     @buttons.each {|r| r.draw(self)}
+    @spawners.each {|r| r.draw(self)}
     @goal.draw(self)
     @bg_image.draw_as_quad(0, 0, 0xffffffff, 800, 0, 0xffffffff, 800, 600, 0xffffffff, 0, 600, 0xffffffff, ZOrder::Platforms - 1)
   end
