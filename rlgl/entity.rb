@@ -3,6 +3,7 @@ class Entity
   attr_accessor :body
   attr_accessor :image
   attr_reader :pin
+  attr_reader :id
   def initialize (mass, detail_hash, window, movable = true)
     x_pos = detail_hash['x'].to_i
     y_pos = window.height - detail_hash['y'].to_i
@@ -26,17 +27,26 @@ class Entity
     
     @driver = nil
     
+    @id = detail_hash['id'].to_s
     @body.p = vec2(x_pos + x_off, y_pos - y_off)
     @vecs = Array.new
     @vecs = [vec2(-x_off,-y_off),vec2(-x_off,y_off),vec2(x_off,y_off),vec2(x_off,-y_off)]
-    @shape = CP::Shape::Poly.new(@body, @vecs)
+    @rot = detail_hash['r'].to_i
+    
+    @shape = CP::Shape::Poly.new(@body, @vecs.rotate(@rot))
     @shape.e = 0.0
     @shape.bb
-    @image = Gosu::Image.new(window, "#{$preface}media/block.png")
+    File.exists?("#{$preface}media/#{detail_hash['i']}")
+    if File.exists?("#{$preface}media/#{detail_hash['i']}") and !File.directory?("#{$preface}media/#{detail_hash['i']}")
+      @image = Gosu::Image.new(window, "#{$preface}media/#{detail_hash['i']}")
+    else
+      @image = Gosu::Image.new(window, "#{$preface}media/block.png")
+    end
     @color = 0xffaaaaaa
     unless hs.to_f.zero? and vs.to_f.zero?
       @driver = EntityDriver.new(@body, @shape, hs, vs, ht, vt)
     end
+    @rot = 0.0
   end
 
   def update(player)
@@ -45,12 +55,14 @@ class Entity
     end
   end
 
-  def draw(game_level, zorder = ZOrder::Platforms)
+  def draw(game_level, zorder=ZOrder::Platforms)
+#    $w.rotate(@rot*90, @body.p.x - game_level.offset_x,@body.p.y) do
     @image.draw_as_quad(@body.p.x - game_level.offset_x + @shape.vert(0).x, @body.p.y + @shape.vert(0).y, @color,
                         @body.p.x - game_level.offset_x + @shape.vert(1).x, @body.p.y + @shape.vert(1).y, @color,
                         @body.p.x - game_level.offset_x + @shape.vert(2).x, @body.p.y + @shape.vert(2).y, @color,
                         @body.p.x - game_level.offset_x + @shape.vert(3).x, @body.p.y + @shape.vert(3).y, @color,
                         zorder)
+                        #end
   end
 end
 

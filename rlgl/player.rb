@@ -10,6 +10,7 @@ class Player < Entity
   
   @@max_h = 500
   @@jolt_amt = 800
+  @@jolt_less = 0.6
   @@slow_down = 0.1
   @@min_x = 50
   @@super_jump_modifier = 1.5
@@ -110,12 +111,12 @@ class Player < Entity
       when 'jump'
         jump(true)
       when 'super_jump'
-        jump(true, true)
+        jump(true, @@super_jump_modifier)
       when 'jump_right'
-        jolt_right
+        jolt_right(@@jolt_less)
         jump(true)
       when 'jump_left'
-        jolt_left
+        jolt_left(@@jolt_less)
         jump(true)
       when 'move_right'
         jolt_right
@@ -133,21 +134,17 @@ class Player < Entity
                         @body.p.x - game_level.offset_x + @shape.vert(3).x, @body.p.y + @shape.vert(3).y, color, ZOrder::Player)
   end
   
-  def jolt_right
-    @body.v.x = @@jolt_amt
+  def jolt_right(mod = 1.0)
+    @body.v.x = @@jolt_amt * mod
   end
   
-  def jolt_left
-    @body.v.x = -@@jolt_amt
+  def jolt_left(mod = 1.0)
+    @body.v.x = -@@jolt_amt * mod
   end
   
-  def jump(override = false, double=false)
+  def jump(override = false, double=1.0)
     if @can_jump or override
-      if double
-        @body.v.y = @@jump_force.y * @@super_jump_modifier
-      else
-        @body.v.y = @@jump_force.y
-      end
+      @body.v.y = @@jump_force.y * double
       @can_jump = false
     end
     #@body.apply_force(@@jump_force, vec2(0,0))

@@ -33,6 +33,7 @@ class ActiveGameLevel
     @platforms = Array.new
     @damagers = Array.new
     @props  = Array.new
+    @buttons = []
     unless level_info['entities']['platforms'].nil?
       level_info['entities']['platforms'].each do |r|
         next if r['w'].to_i.zero? or r['h'].to_i.zero?
@@ -43,7 +44,6 @@ class ActiveGameLevel
       end
     end
     @space.rehash_static
-    
     unless level_info['entities']['damagers'].nil?
       level_info['entities']['damagers'].each do |r|
         next if r['w'].to_i.zero? or r['h'].to_i.zero?
@@ -51,6 +51,14 @@ class ActiveGameLevel
         add_entity(j)
       end
     end
+    unless level_info['entities']['buttons'].nil?
+      level_info['entities']['buttons'].each do |r|
+        next if r['w'].to_i.zero? or r['h'].to_i.zero?
+        @buttons << j = Button.new(@@mass, r, window, @space, self)
+        add_entity(j)
+      end
+    end
+    
     g = level_info['entities']['goal']
     unless g.nil?
       @goal = Goal.new(@@mass, g, window) unless g['w'].to_i.zero? or g['h'].to_i.zero?
@@ -94,7 +102,19 @@ class ActiveGameLevel
         @space.rehash_shape(r.shape)
       end
     end
-    
+    @damagers.each do |r|
+      if r.update(player)
+        @space.rehash_shape(r.shape)
+      end
+    end
+    @props.each do |r|
+      if r.update(player)
+        @space.rehash_shape(r.shape)
+      end
+    end
+    @buttons.each do |r|
+      r.update(player)
+    end
     @space.step(1.0/60)
   end
   
@@ -107,8 +127,13 @@ class ActiveGameLevel
     #@image.draw_as_quad(@platform_body.p.x + @platform_shape.vert(0).x,@platform_body.p.y + @platform_shape.vert(0).y,0xffffffff, @platform_body.p.x + @platform_shape.vert(1).x, @platform_body.p.y + @platform_shape.vert(1).y, 0xffffffff, @platform_body.p.x + @platform_shape.vert(2).x, @platform_body.p.y + @platform_shape.vert(2).y, 0xffffffff, @platform_body.p.x + @platform_shape.vert(3).x, @platform_body.p.y + @platform_shape.vert(3).y, 0xffffffff, ZOrder::Platforms)
     @platforms.each {|r| r.draw(self)}
     @damagers.each {|r| r.draw(self)}
+    @buttons.each {|r| r.draw(self)}
     @goal.draw(self)
     @bg_image.draw_as_quad(0, 0, 0xffffffff, 800, 0, 0xffffffff, 800, 600, 0xffffffff, 0, 600, 0xffffffff, ZOrder::Platforms - 1)
+  end
+  
+  def find_entity_by_id(id)
+    @platforms.select{|r| r.id == id}.first || @damagers.select{|r| r.id == id}.first || (@goal.id == id ? @goal : nil)
   end
 end
 
