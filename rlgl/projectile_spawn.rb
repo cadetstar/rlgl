@@ -19,10 +19,12 @@ class ProjectileSpawn < Prop
 
   def update
     @projectiles.each do |r|
-      if r.dead
+      if r.driver.dead
         @window.space.remove_body r.body
         @window.space.remove_shape r.shape
         @projectiles.delete r
+      else
+        r.driver.update
       end
     end
     @t -= 1.0/60
@@ -30,6 +32,10 @@ class ProjectileSpawn < Prop
       spawn
       @t = @ttf
     end
+  end
+  def draw(game_level)
+    super(game_level)
+    @projectiles.draw(game_level)
   end
 end
 
@@ -47,9 +53,17 @@ class Projectile
     @shape = CP::Shape::Poly.new(@body, @vecs)
     @driver = ProjectileDriver.new(@body, @shape, hs, vs, pl)
     @image = Gosu::Image.new(window, "#{$preface}media/#{pi}")
+    @color = 0xffaaaaaa
   end
   def update
     @driver.update
+  end
+  def draw(game_level)
+    @image.draw_as_quad(@body.p.x - game_level.offset_x + @shape.vert(0).x, @body.p.y + @shape.vert(0).y, @color,
+                  @body.p.x - game_level.offset_x + @shape.vert(1).x, @body.p.y + @shape.vert(1).y, @color,
+                  @body.p.x - game_level.offset_x + @shape.vert(2).x, @body.p.y + @shape.vert(2).y, @color,
+                  @body.p.x - game_level.offset_x + @shape.vert(3).x, @body.p.y + @shape.vert(3).y, @color,
+                  ZOrder::Platforms)
   end
 end
 
