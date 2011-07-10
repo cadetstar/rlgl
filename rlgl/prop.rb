@@ -8,7 +8,6 @@ class Prop < Entity
     else
       self.shape.collision_type = :none #this doesn't work! change it!
     end
-    @rot = detail_hash[r].to_f
   end
   def draw(game_level)
     $w.rotate(@rot*90, @body.p.x - game_level.offset_x,@body.p.y) do

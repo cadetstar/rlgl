@@ -113,6 +113,34 @@
 </div>
 <p><%= link_to_function "New Button", "duplicateFromAToB('new_button','button_holder');" %></p>
 
+<h4>Projectiles</h4>
+<div id="spawner_holder">
+  <% if @info['entities']['spawners'] %>
+    <% @info['entities']['spawners'].each do |e| %>
+      <p>
+        X: <%= text_field_tag "spawners[][x]", e['x']  %>
+        Y: <%= text_field_tag "spawners[][y]", e['y']  %>
+        H: <%= text_field_tag "spawners[][h]", e['h']  %>
+        W: <%= text_field_tag "spawners[][w]", e['w']  %>
+        ROT: <%= text_field_tag "spawners[][r]", e['r']  %>
+        IMG: <%= text_field_tag "spawners[][i]", e['i']  %>
+        HS: <%= text_field_tag "spawners[][hs]", e['hs'] %>
+        VS: <%= text_field_tag "spawners[][vs]", e['vs'] %>
+        HT: <%= text_field_tag "spawners[][ht]", e['ht'] %>
+        VT: <%= text_field_tag "spawners[][vt]", e['vt'] %>
+        ID: <%= text_field_tag "spawners[][id]", e['id'] %>
+        PHS: <%= text_field_tag "spawners[][phs]", e['phs'] %>
+        PVS: <%= text_field_tag "spawners[][pvs]", e['pvs'] %>
+        PL: <%= text_field_tag "spawners[][pl]", e['pl'] %>
+        TTF: <%= text_field_tag "spawners[][ttf]", e['ttf'] %>
+        PI: <%= text_field_tag "spawners[][pi]", e['pi'] %>
+      -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %>
+      </p>
+    <% end %>
+  <% end %>
+</div>
+<p><%= link_to_function "New Projectile", "duplicateFromAToB('new_spawner','spawner_holder');" %></p>
+
 <h4>Props</h4>
 <div id="prop_holder">
   <% if @info['entities']['props'] %>
@@ -192,6 +220,28 @@
       -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %>
       </p>
 </div>
+<div style="display: none;" id="new_spawner">
+      <p>
+        X: <%= text_field_tag "spawners[][x]", 0  %>
+        Y: <%= text_field_tag "spawners[][y]", 0  %>
+        H: <%= text_field_tag "spawners[][h]", 0  %>
+        W: <%= text_field_tag "spawners[][w]", 0  %>
+        ROT: <%= text_field_tag "spawners[][r]", 0  %>
+        IMG: <%= text_field_tag "spawners[][i]", ''  %>
+        HS: <%= text_field_tag "spawners[][hs]", 0 %>
+        VS: <%= text_field_tag "spawners[][vs]", 0 %>
+        HT: <%= text_field_tag "spawners[][ht]", 0 %>
+        VT: <%= text_field_tag "spawners[][vt]", 0 %>
+        ID: <%= text_field_tag "spawners[][id]", 0 %>
+        PHS: <%= text_field_tag "spawners[][phs]", 0 %>
+        PVS: <%= text_field_tag "spawners[][pvs]", 0 %>
+        PL: <%= text_field_tag "spawners[][pl]", 0 %>
+        TTF: <%= text_field_tag "spawners[][ttf]", 1 %>
+        PI: <%= text_field_tag "spawners[][pi]", '' %>
+      -- <%= link_to_function "Destroy", "this.parentNode.parentNode.removeChild(this.parentNode);" %>
+      </p>
+</div>
+
 <div style="display: none;" id="new_prop">
       <p>X: <%= text_field_tag "props[][x]", 0  %>
       Y: <%= text_field_tag "props[][y]", 0  %>

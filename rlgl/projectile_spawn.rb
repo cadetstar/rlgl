@@ -1,6 +1,6 @@
 class ProjectileSpawn < Prop
   attr_reader :projectiles
-  def initialize(mass, detail_hash, window)
+  def initialize(mass, detail_hash, window, game_level)
     super(mass, detail_hash, window)
     @projectiles = Array.new
     @phs = detail_hash['phs'].to_f
@@ -9,12 +9,13 @@ class ProjectileSpawn < Prop
     @ttf = detail_hash['ttf'].to_f
     @pi = detail_hash['pi']
     @t = @ttf
+    @window = window
+    @game_level = game_level
   end
 
   def spawn
-    @projectiles << e = Projectile.new(@body.p.x, @body.p.y, @phs, @pvs, @pl, @pi)
-    @window.space.add_body(e.body)
-    @window.space.add_shape(e.shape)
+    @projectiles << e = Projectile.new(@body.p.x, @body.p.y, @phs, @pvs, @pl, @pi, @window)
+    @game_level.add_entity(e)
   end
 
   def update
@@ -25,6 +26,7 @@ class ProjectileSpawn < Prop
         @projectiles.delete r
       else
         r.driver.update
+        @game_level.rehash_shape(r.shape)
       end
     end
     @t -= 1.0/60
@@ -35,7 +37,7 @@ class ProjectileSpawn < Prop
   end
   def draw(game_level)
     super(game_level)
-    @projectiles.draw(game_level)
+    @projectiles.each{|s| s.draw(game_level)}
   end
 end
 
@@ -43,16 +45,22 @@ class Projectile
   attr_accessor :driver
   attr_accessor :body
   attr_accessor :shape
-  def initialize(x, y, hs, vs, pl, pi)
+  def initialize(x, y, hs, vs, pl, pi, window)
     @body  = CP::Body.new_static()
     @body.velocity_func() { |body, gravity, damping, dt| vec2(0,0)}
     @x_size = 30
     @y_size = 30
     @body.p = vec2(x,y)
-    @vecs = [vec2(-15,-15),vec2(15,-15),vec2(15,15),vec2(-15,15)]
+    @vecs = [vec2(-15,-15),vec2(-15,15),vec2(15,15),vec2(15,-15)]
     @shape = CP::Shape::Poly.new(@body, @vecs)
+    @shape.collision_type = :damager
     @driver = ProjectileDriver.new(@body, @shape, hs, vs, pl)
-    @image = Gosu::Image.new(window, "#{$preface}media/#{pi}")
+    if File.exists?("#{$preface}media/#{pi}") and !File.directory?("#{$preface}media/#{pi}")
+      @image = Gosu::Image.new(window, "#{$preface}media/#{pi}")
+    else
+      @image = Gosu::Image.new(window, "#{$preface}media/block.png")
+    end
+    
     @color = 0xffaaaaaa
   end
   def update

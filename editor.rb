@@ -85,6 +85,7 @@ post '/level/save/:name' do
       c['entities']['damagers'] = params[:damagers]
       c['entities']['props'] = params[:props]
       c['entities']['buttons'] = params[:buttons]
+      c['entities']['spawners'] = params[:spawners]
       
       puts params.inspect
       

@@ -62,7 +62,7 @@ class ActiveGameLevel
     unless level_info['entities']['spawners'].nil?
       level_info['entities']['spawners'].each do |r|
         next if r['w'].to_i.zero? or r['h'].to_i.zero?
-        @spawners << j = ProjectileSpawn.new(@@mass, r, window)
+        @spawners << j = ProjectileSpawn.new(@@mass, r, window, self)
         add_entity(j)
       end
     end
@@ -83,6 +83,10 @@ class ActiveGameLevel
     #add_entity(@platform)
 #    @platform.body.velocity_func() {vec2(0,0)}
     @waiting = false
+  end
+  
+  def rehash_shape(s)
+    @space.rehash_shape(s)
   end
   
   def add_entity(e)
@@ -117,6 +121,11 @@ class ActiveGameLevel
     end
     @props.each do |r|
       if r.update(player)
+        @space.rehash_shape(r.shape)
+      end
+    end
+    @spawners.each do |r|
+      if r.update
         @space.rehash_shape(r.shape)
       end
     end

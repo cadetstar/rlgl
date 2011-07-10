@@ -20,7 +20,7 @@ class Button < Entity
     @actor_entity = nil
   end
   
-  def update
+  def update(player)
     super(player)
     if @actor_entity
       case @action
@@ -49,7 +49,6 @@ class Button < Entity
   
   
   def perform_button(game_level)
-    puts "Hello?"
     @actor_entity = game_level.find_entity_by_id(@actor)
   end
 end

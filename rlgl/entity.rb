@@ -36,7 +36,6 @@ class Entity
     @shape = CP::Shape::Poly.new(@body, @vecs.rotate(@rot))
     @shape.e = 0.0
     @shape.bb
-    File.exists?("#{$preface}media/#{detail_hash['i']}")
     if File.exists?("#{$preface}media/#{detail_hash['i']}") and !File.directory?("#{$preface}media/#{detail_hash['i']}")
       @image = Gosu::Image.new(window, "#{$preface}media/#{detail_hash['i']}")
     else
