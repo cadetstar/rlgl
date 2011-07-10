@@ -78,7 +78,7 @@ class ActiveGameLevel
     #@platform_shape = CP::Shape::Poly.new(@platform_body, [vec2(0,0),vec2(0,20),vec2(600,20),vec2(600,0)])
 
     
-    @bg_image = Gosu::Image.new(window, "#{$preface}media/Space.png" )
+    @bg_image = Gosu::Image.new(window, "#{$preface}media/background.jpg" )
 
     #add_entity(@platform)
 #    @platform.body.velocity_func() {vec2(0,0)}
@@ -147,7 +147,8 @@ class ActiveGameLevel
     @buttons.each {|r| r.draw(self)}
     @spawners.each {|r| r.draw(self)}
     @goal.draw(self)
-    @bg_image.draw_as_quad(0, 0, 0xffffffff, 800, 0, 0xffffffff, 800, 600, 0xffffffff, 0, 600, 0xffffffff, ZOrder::Platforms - 1)
+    color = 0x44ffffff
+    @bg_image.draw_as_quad(0 - self.offset_x, 0, color, @width - self.offset_x, 0, color, @width - self.offset_x, 600, color, 0 - self.offset_x, 600, color, ZOrder::Background)
   end
   
   def find_entity_by_id(id)

@@ -42,7 +42,7 @@ class Player < Entity
     game_level.add_collision_handler(:player, :platform, CustomSideHandler.new(self))
     game_level.add_collision_handler(:player, :none, NoHandler.new)
     
-    @player_image = Gosu::Image.new(window, "#{$preface}media/player.png")
+    @player_image = Gosu::Image.new(window, "#{$preface}media/robot.png")
     @can_jump = true
     @actions = []
     @player_in_control = true
@@ -131,12 +131,14 @@ class Player < Entity
   end
   
   def draw(game_level)
-    color = 0xff0000ff
+    color = 0xffffffff
     #@player_image.draw_rot(@body.p.x - game_level.offset_x,@body.p.y, ZOrder::Player, 0)
-    $w.draw_quad(@body.p.x - game_level.offset_x + @shape.vert(0).x, @body.p.y + @shape.vert(0).y, color,
+    @player_image.draw_as_quad(
+                        @body.p.x - game_level.offset_x + @shape.vert(0).x, @body.p.y + @shape.vert(0).y, color,
+                        @body.p.x - game_level.offset_x + @shape.vert(3).x, @body.p.y + @shape.vert(3).y, color,
+                        @body.p.x - game_level.offset_x + @shape.vert(2).x, @body.p.y + @shape.vert(2).y, color, 
                         @body.p.x - game_level.offset_x + @shape.vert(1).x, @body.p.y + @shape.vert(1).y, color,
-                        @body.p.x - game_level.offset_x + @shape.vert(2).x, @body.p.y + @shape.vert(2).y, color,
-                        @body.p.x - game_level.offset_x + @shape.vert(3).x, @body.p.y + @shape.vert(3).y, color, ZOrder::Player)
+                        ZOrder::Player)
   end
   
   def jolt_right(mod = 1.0)
