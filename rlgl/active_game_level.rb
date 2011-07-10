@@ -27,7 +27,7 @@ class ActiveGameLevel
     
     CP.bias_coef = 0.5
 
-    @space.add_collision_func(:player, :goal) {|k,v,arb| @window.return_to_menu}
+    @space.add_collision_func(:player, :goal) {|k,v,arb| @window.win_tag.play;@window.return_to_menu}
     @space.add_collision_func(:player, :damager) {|k,v,arb| @window.kill_player}
     #@platform = Platform.new(10, 400, 500, 800, 20, window)
     @platforms = Array.new

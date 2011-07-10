@@ -1,4 +1,5 @@
 class GameWindow < Gosu::Window
+  attr_reader :win_tag
   def initialize
     super 800, 600, false
     self.caption = 'Red Light, Green Light'
@@ -11,6 +12,10 @@ class GameWindow < Gosu::Window
     @death_font = Gosu::Font.new(self, "#{$preface}media/BLACKLTR.ttf", 128)
     @t = "You are DEAD!"
     @render_x = (self.width - @death_font.text_width(@t)) / 2.0
+    @song = Gosu::Sample.new(self, "#{$preface}media/Silly Fun Theme #{rand > 0.5 ? 'A' : 'B'}.mp3")
+    @death_song = Gosu::Sample.new(self, "#{$preface}media/Grammophone Taps.mp3")
+    lets = %w(C D E)
+    @win_tag = Gosu::Sample.new(self, "#{$preface}media/Silly Fun End #{lets[rand(lets.size)]}.mp3")
   end
   
   def update
@@ -91,18 +96,34 @@ class GameWindow < Gosu::Window
     @ui = nil
     @player = nil
     @active_screen = 'menu'
+    if @song_inst
+      @song_inst.stop
+    end
+    if @death_inst 
+      @death_inst.stop
+    end
   end
   
   def kill_player
+    if @song_inst
+      @song_inst.stop
+    end
+    
     @dead = 0xffff0000
     @dead_bot = 0x00ff0000
-    @counter = 120
+    @counter = 400
+    @death_inst = @death_song.play
   end
     
   def regen_level
+    if @death_inst 
+      @death_inst.stop
+    end
+    
     @dead = nil
     @game_level = ActiveGameLevel.new(@current_level, self)
     @ui = UI.new(@game_level.actions, self)
     @player = Player.new(self, @game_level, @current_level['start_pos'])
+    @song_inst = @song.play(1,1,true)
   end
 end
