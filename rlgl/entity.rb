@@ -1,6 +1,7 @@
 class Entity
   attr_accessor :shape
   attr_accessor :body
+  attr_accessor :image
   def initialize (mass, x_pos, y_pos, x_size, y_size, window, movable = true)
     if movable
       @body  = CP::Body.new(mass, CP.moment_for_box(mass, x_size, y_size))
@@ -20,7 +21,7 @@ class Entity
     @shape.e = 0.0
     @shape.bb
     @image = Gosu::Image.new(window, './media/block.png')
-    @color = 0xaaaaaaaa
+    @color = 0xffaaaaaa
   end
 
   def update

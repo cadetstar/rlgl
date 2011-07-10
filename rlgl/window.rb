@@ -20,9 +20,10 @@ class GameWindow < Gosu::Window
             @player.move_left
           end
         end
-        @player.update(@game_level)
-        
         @game_level.update(@player)
+        if @active_screen == 'game'
+          @player.update(@game_level)
+        end
     end
   end
   
@@ -61,12 +62,7 @@ class GameWindow < Gosu::Window
           when Gosu::KbUp
             @player.jump if @player.player_in_control
           when Gosu::KbEscape
-            @levels = GameLevels.names
-            @menu = Menu.new(@levels, self)
-            @game_level = nil
-            @ui = nil
-            @player = nil
-            @active_screen = 'menu'
+              return_to_menu
             return
         end
     end
@@ -74,5 +70,13 @@ class GameWindow < Gosu::Window
     if id == Gosu::KbEscape
       close
     end
+  end
+  def return_to_menu
+    @levels = GameLevels.names
+    @menu = Menu.new(@levels, self)
+    @game_level = nil
+    @ui = nil
+    @player = nil
+    @active_screen = 'menu'
   end
 end

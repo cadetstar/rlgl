@@ -4,10 +4,13 @@ class Player < Entity
   attr_reader :shape
   
   @@walk_force = vec2(500,0)
-  @@jump_force = vec2(0,-140)
+  @@jump_force = vec2(0,-340)
   
-  @@max_h = 200
-  @@jolt_amt = 70
+  @@max_h = 500
+  @@jolt_amt = 300
+  @@slow_down = 0.1
+
+  @@max_player_x = 100
   
   def initialize(window, game_level, start_pos = {'x' => 200, 'y' => 200})
     @body = CP::Body.new(200, CP.moment_for_box(200, 50,80))
@@ -38,6 +41,11 @@ class Player < Entity
   end
   
   def update(game_level)
+    if @body.p.y > $w.height + 50
+      $w.return_to_menu
+      return
+    end
+
     unless @player_in_control
       unless @actions.empty?
         if Time.now > @actions[0][0]
@@ -49,14 +57,23 @@ class Player < Entity
         game_level.finished_actions
       end
     end
-    
-    if @body.v.x > @@max_h
-      @body.v.x = @@max_h
+
+    if @player_in_control
+      if @body.v.x > @@max_player_x
+        @body.v.x = [@body.v.x - @@slow_down, @@max_player_x].max
+      end
+      if @body.v.x < -@@max_player_x
+        @body.v.x = [@body.v.x + @@slow_down, -@@max_player_x].min
+      end
+    else
+      if @body.v.x > @@max_h
+        @body.v.x = [@body.v.x - @@slow_down, @@max_h].max
+      end
+      if @body.v.x < -@@max_h
+        @body.v.x = [@body.v.x + @@slow_down, -@@max_h].min
+      end
     end
-    if @body.v.x < -@@max_h
-      @body.v.x = -@@max_h
-    end
-    
+
     
     movement = 0
     diff = @body.p.x - game_level.offset_x - $w.width / 2.0
@@ -122,11 +139,19 @@ class Player < Entity
   end
   
   def move_right
+    pre_max = @body.v.x
     @body.apply_impulse(@@walk_force, vec2(0,0))
+    if @body.v.x > @@max_player_x
+      @body.v.x = pre_max
+    end
   end
   
   def move_left
+    pre_max = @body.v.x
     @body.apply_impulse(-@@walk_force, vec2(0,0))
+    if @body.v.x < -@@max_player_x
+      @body.v.x = pre_max
+    end
   end
   
 end

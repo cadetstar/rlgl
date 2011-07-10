@@ -9,6 +9,8 @@ class ActiveGameLevel
   @@mass = 10
 
   def initialize(level_info, window)
+    @window = window
+
     #@action_interval = 5.0
     @action_interval = level_info['action_interval'].to_f
     @time_to_next_action = Time.now + @action_interval.to_f
@@ -19,23 +21,40 @@ class ActiveGameLevel
     #@actions = [['move_right', 1]]
 
     @space = CP::Space.new()
-    @space.gravity = vec2(0,200)
+    @space.gravity = vec2(0,400)
 #    @space.damping = 0.95
     @space.iterations = 20
     
     CP.bias_coef = 0.5
 
+    @space.add_collision_func(:player, :goal) {|k,v,arb| @window.return_to_menu}
+    @space.add_collision_func(:player, :damager) {|k,v,arb| @window.return_to_menu}
     #@platform = Platform.new(10, 400, 500, 800, 20, window)
     @platforms = Array.new
-    level_info['entities']['platforms'].each do |r|
-      next if r['w'].to_i.zero? or r['h'].to_i.zero?
-      @platforms << j = Platform.new(@@mass, r['x'].to_i, window.height - r['y'].to_i, r['w'].to_i, r['h'].to_i, window)
-      add_entity(j)
+    @damagers = Array.new
+    @props  = Array.new
+    unless level_info['entities']['platforms'].nil?
+      level_info['entities']['platforms'].each do |r|
+        next if r['w'].to_i.zero? or r['h'].to_i.zero?
+        @platforms << j = Platform.new(@@mass, r['x'].to_i, window.height - r['y'].to_i, r['w'].to_i, r['h'].to_i, window)
+        add_entity(j)
 #      puts j.shape.bb
+      end
     end
-    
     @space.rehash_static
     
+    unless level_info['entities']['damagers'].nil?
+      level_info['entities']['damagers'].each do |r|
+        next if r['w'].to_i.zero? or r['h'].to_i.zero?
+        @damagers << j = Platform.new(@@mass, r['x'].to_i, window.height - r['y'].to_i, r['w'].to_i, r['h'].to_i, window)
+        add_entity(j)
+      end
+    end
+    g = level_info['entities']['goal']
+    unless g.nil?
+      @goal = Goal.new(@@mass, g['x'].to_i, window.height - g['y'].to_i, g['w'].to_i, g['h'].to_i, window) unless g['w'].to_i.zero? or g['h'].to_i.zero?
+      add_entity(@goal)
+    end
     @offset_x = 0
     #@platform_body = CP::Body.new_static()
     #@platform_body.p = vec2(0,500)
@@ -70,8 +89,7 @@ class ActiveGameLevel
       player.setup_actions(@actions)
       @waiting = true
     end
-    
-    @space.step(1.0 / 60)
+    @space.step(1.0/60)
   end
   
   def finished_actions
@@ -82,6 +100,8 @@ class ActiveGameLevel
   def draw
     #@image.draw_as_quad(@platform_body.p.x + @platform_shape.vert(0).x,@platform_body.p.y + @platform_shape.vert(0).y,0xffffffff, @platform_body.p.x + @platform_shape.vert(1).x, @platform_body.p.y + @platform_shape.vert(1).y, 0xffffffff, @platform_body.p.x + @platform_shape.vert(2).x, @platform_body.p.y + @platform_shape.vert(2).y, 0xffffffff, @platform_body.p.x + @platform_shape.vert(3).x, @platform_body.p.y + @platform_shape.vert(3).y, 0xffffffff, ZOrder::Platforms)
     @platforms.each {|r| r.draw(self)}
+    @damagers.each {|r| r.draw(self)}
+    @goal.draw(self)
     @bg_image.draw_as_quad(0, 0, 0xffffffff, 800, 0, 0xffffffff, 800, 600, 0xffffffff, 0, 600, 0xffffffff, ZOrder::Platforms - 1)
   end
 end
@@ -92,15 +112,13 @@ class CustomSideHandler < CP::Arbiter
   end
   
   def begin(a,b,arbiter)
-    if arbiter.normal(0).y == 1.0
+    a.body.a = 0
+    puts arbiter.normal(0).y
+    if arbiter.normal(0).y.round(1) == 1.0
       @player.can_jump = true
     end
     true
   end
   
-  def pre_solve(a,b,arbiter)
-    puts "FIres: #{Time.now}"
-    arbiter.u=0
-    true
-  end
+
 end
