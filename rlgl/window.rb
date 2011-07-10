@@ -22,6 +22,9 @@ class GameWindow < Gosu::Window
     case @active_screen
       when 'game'
         unless @dead
+          if @death_inst 
+            @death_inst.stop
+          end
           if @player.player_in_control
             if button_down? Gosu::KbRight
               @player.move_right
@@ -119,8 +122,8 @@ class GameWindow < Gosu::Window
     
     @dead = 0xffff0000
     @dead_bot = 0x00ff0000
-    @counter = 400
-    @death_inst = @death_song.play
+    @counter = 120
+#    @death_inst = @death_song.play
   end
     
   def regen_level
